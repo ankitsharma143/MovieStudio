@@ -7,6 +7,8 @@ const express = require('express');
 const cors = require('cors');
 
 const app = express();
+const path = require('path');
+app.use(express.static(path.join(__dirname, '..')));
 app.use(cors({ origin: process.env.ALLOWED_ORIGIN || '*' }));
 app.use(express.json({ limit: '10mb' }));
 
