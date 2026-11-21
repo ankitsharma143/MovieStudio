@@ -4255,15 +4255,18 @@ function renderLeftDrawer() {
         <div id="aiAnalysisOut" style="font-size:10px;color:var(--text-1);line-height:1.45;">Click Analyze for Shot, Camera Angle, Lens, Lighting & Continuity suggestions.</div>
       </div>
       <div class="prop-group">
-        <div class="prop-title"><span>Generative AI Backend Proxy</span><span class="badge-synth" style="color:#fca5a5;border-color:#ef4444;">NOT CONNECTED</span></div>
-        <div style="font-size:10px;color:var(--text-2);">Security V4: API keys are NEVER stored in frontend or localStorage. Connect your secure Node.js backend proxy (included in V4 ZIP):</div>
-        <input type="text" id="aiProxyUrl" placeholder="https://your-backend-proxy/api" value="${escHtml(pl.aiConfig.backendProxyUrl || '')}">
-        <div class="grid-3">
-          <button id="btnGenAiImg" title="Requires connected backend proxy">🖼 AI Image</button>
-          <button id="btnGenAiVid" title="Requires connected backend proxy">🎬 AI Video</button>
-          <button id="btnGenAiVox" title="Requires connected backend proxy">🗣 AI Voice</button>
+        <div class="prop-title"><span>Generative AI Backend Proxy</span><span id="aiProxyBadge" class="badge-synth" style="color:#fca5a5;border-color:#ef4444;">NOT CONNECTED</span></div>
+        <div id="aiProviderInfo" style="font-size:10px;color:var(--text-2);">API keys stay safely on your backend server (.env). Enter your HTTPS Backend URL below:</div>
+        <input type="text" id="aiProxyUrl" placeholder="https://moviestudio.onrender.com/api" value="${escHtml(pl.aiConfig.backendProxyUrl || '')}">
+        <div class="grid-2">
+          <button id="btnSaveAiCfg" class="primary">💾 Save & Connect</button>
+          <button id="btnTestAiConn" class="cyan">🔄 Test Link</button>
         </div>
-        <button id="btnSaveAiCfg">Save Backend Proxy URL</button>
+        <div class="grid-3">
+          <button id="btnGenAiImg" title="Generate AI Image via Backend Proxy">🖼 AI Image</button>
+          <button id="btnGenAiVid" title="Generate AI Video via Backend Proxy">🎬 AI Video</button>
+          <button id="btnGenAiVox" title="Generate AI Voice via Backend Proxy">🗣 AI Voice</button>
+        </div>
       </div>
     `;
     $('aiScript').addEventListener('input', e => { pl.script = e.target.value; });
@@ -4386,19 +4389,59 @@ function renderLeftDrawer() {
       `;
       toast('Script analysis complete!', 'success');
     });
-    const requireBackendNotice = feat => {
-      const url = (pl.aiConfig.backendProxyUrl || '').trim();
-      if (!url) return toast(`${feat}: NOT CONNECTED — Start the V4 Node.js Backend Proxy (see ZIP docs) and enter its URL.`, 'error');
-      toast(`${feat}: Backend proxy URL configured (${url}). Run server.js to process API requests.`, 'info');
+    const testBackendConnection = async (silent = false) => {
+      const rawUrl = (pl.aiConfig.backendProxyUrl || '').trim().replace(/\/+$/, '');
+      const badge = $('aiProxyBadge'), info = $('aiProviderInfo');
+      if (!rawUrl || !rawUrl.startsWith('https://')) {
+        if (badge) { badge.textContent = 'NOT CONNECTED'; badge.style.color = '#fca5a5'; badge.style.borderColor = '#ef4444'; }
+        if (!silent && rawUrl && !rawUrl.startsWith('https://')) toast('Please use an https:// backend URL', 'error');
+        return false;
+      }
+      if (badge) { badge.textContent = 'CONNECTING...'; badge.style.color = '#fde047'; badge.style.borderColor = '#f59e0b'; }
+      try {
+        const res = await fetch(rawUrl + '/health', { method: 'GET' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        const activeProvs = Object.entries(data.providers || {}).filter(([,v]) => v).map(([k]) => k.toUpperCase());
+        if (badge) { badge.textContent = '● CONNECTED'; badge.style.color = '#34d399'; badge.style.borderColor = '#10b981'; }
+        if (info) info.textContent = activeProvs.length ? ('Connected! Active APIs: ' + activeProvs.join(', ')) : 'Connected to backend! Add API keys in Render Environment Variables.';
+        if (!silent) toast('Backend Proxy Connected Successfully!', 'success');
+        return true;
+      } catch (err) {
+        if (badge) { badge.textContent = 'OFFLINE / WAKING'; badge.style.color = '#fca5a5'; badge.style.borderColor = '#ef4444'; }
+        if (info) info.textContent = 'Could not reach ' + rawUrl + '/health (Render free servers take ~30s to wake up — tap Test Link again).';
+        if (!silent) toast('Backend check failed: ' + err.message, 'error');
+        return false;
+      }
     };
-    $('btnGenAiImg').addEventListener('click', () => requireBackendNotice('AI Image Generation'));
-    $('btnGenAiVid').addEventListener('click', () => requireBackendNotice('AI Video Generation'));
-    $('btnGenAiVox').addEventListener('click', () => requireBackendNotice('AI Neural Voice'));
-    $('btnSaveAiCfg').addEventListener('click', () => {
-      pl.aiConfig = { backendProxyUrl: ($('aiProxyUrl').value || '').trim() };
+    const callBackendAI = async (endpoint, label) => {
+      const rawUrl = (pl.aiConfig.backendProxyUrl || '').trim().replace(/\/+$/, '');
+      if (!rawUrl || !rawUrl.startsWith('https://')) return toast(`${label}: Enter your https:// Backend Proxy URL and click Save & Connect first.`, 'error');
+      const promptTxt = ($('aiScript').value || 'Epic mythological temple at sunrise').trim().slice(0, 400);
+      toast(`Sending ${label} request to backend...`);
+      try {
+        const res = await fetch(rawUrl + endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt: promptTxt })
+        });
+        const data = await res.json();
+        if (!res.ok) return toast(`${label}: ${data.error || ('HTTP ' + res.status)}`, 'error');
+        toast(`${label}: ${data.message || 'Response received from backend!'}`, 'success');
+      } catch (err) {
+        toast(`${label} request failed: ${err.message}`, 'error');
+      }
+    };
+    $('btnGenAiImg').addEventListener('click', () => callBackendAI('/ai/image', 'AI Image'));
+    $('btnGenAiVid').addEventListener('click', () => callBackendAI('/ai/video', 'AI Video'));
+    $('btnGenAiVox').addEventListener('click', () => callBackendAI('/ai/voice', 'AI Voice'));
+    $('btnTestAiConn').addEventListener('click', () => testBackendConnection(false));
+    $('btnSaveAiCfg').addEventListener('click', async () => {
+      pl.aiConfig = { backendProxyUrl: ($('aiProxyUrl').value || '').trim().replace(/\/+$/, '') };
       safeLSSet('maha_backend_cfg', pl.aiConfig);
-      toast('Backend proxy URL saved (no API keys stored in browser)', 'success');
+      await testBackendConnection(false);
     });
+    if (pl.aiConfig.backendProxyUrl) testBackendConnection(true);
   } else if (mod === 'projects') {
     body.innerHTML = `
       <div class="grid-2">
