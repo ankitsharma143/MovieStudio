@@ -7,6 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="./manifest.json">
 <title>MAHAINDUSTRIES MOVIE STUDIO — Professional Film Production Suite</title>
 <style>
 :root {
@@ -230,7 +231,8 @@ input[type="color"] { padding: 1px; height: 26px; width: 38px; cursor: pointer; 
   border-bottom: 1px solid var(--border); display: flex; align-items: center;
   padding: 0 8px; font-size: 10px; color: var(--text-2); justify-content: space-between;
 }
-#trackHeadersList { flex: 1; overflow-y: hidden; }
+#trackHeadersList { flex: 1; overflow-y: auto; scrollbar-width: none; }
+#trackHeadersList::-webkit-scrollbar { display: none; }
 .track-header {
   height: 44px; border-bottom: 1px solid var(--border);
   padding: 4px 6px; display: flex; flex-direction: column; justify-content: space-between;
@@ -428,6 +430,139 @@ input[type="color"] { padding: 1px; height: 26px; width: 38px; cursor: pointer; 
   display: none; align-items: center; gap: 8px; z-index: 15; box-shadow: 0 4px 16px rgba(0,0,0,0.6);
 }
 
+
+/* EASY MODE: Clean, beginner-friendly workspace hiding pro-only clutter */
+body.easy-mode #btnRippleToggle,
+body.easy-mode #btnDetectBeats,
+body.easy-mode #btnAddMarker,
+body.easy-mode #btnNodeFxModal,
+body.easy-mode #btnGroupClips,
+body.easy-mode #editModeSelect,
+body.easy-mode #sceneTabsBar,
+body.easy-mode #btnBeforeAfter,
+body.easy-mode #btnScopesToggle,
+body.easy-mode #btnCopyClip,
+body.easy-mode #btnPasteClip {
+  display: none !important;
+}
+.tpl-card {
+  background: var(--bg-1); border: 1px solid var(--border); border-radius: 8px;
+  padding: 12px 10px; text-align: left; display: flex; flex-direction: column; gap: 4px;
+  cursor: pointer; transition: border-color 0.15s, background 0.15s;
+}
+.tpl-card:hover { border-color: var(--gold); background: var(--bg-3); }
+
+
+/* FULL-SCREEN CINEMATIC RENDER DISPLAY & BACKGROUND NOTIFICATION PILL */
+#renderScreenOverlay {
+  position: fixed; inset: 0; z-index: 140;
+  background: radial-gradient(circle at 50% 35%, #171e2e 0%, #07090e 75%);
+  display: none; flex-direction: column; align-items: center; justify-content: center;
+  padding: 20px; text-align: center; gap: 16px;
+}
+#renderScreenOverlay.open { display: flex; animation: fadeSlide 0.25s ease; }
+.render-ring-wrap {
+  position: relative; width: 176px; height: 176px;
+  display: flex; align-items: center; justify-content: center;
+  filter: drop-shadow(0 0 22px rgba(245,158,11,0.38));
+}
+.render-ring-wrap svg { transform: rotate(-90deg); width: 176px; height: 176px; }
+.render-pct-big {
+  position: absolute; font-family: var(--mono); font-size: 36px; font-weight: 800;
+  background: linear-gradient(135deg, #fef08a, #f59e0b 55%, #06b6d4);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+#bgRenderPill {
+  position: fixed; top: 52px; right: 12px; z-index: 135;
+  background: rgba(15,19,26,0.95); border: 1px solid var(--gold);
+  border-radius: 26px; padding: 6px 12px; display: none; align-items: center; gap: 9px;
+  box-shadow: 0 8px 26px rgba(0,0,0,0.75), 0 0 14px rgba(245,158,11,0.28);
+  cursor: pointer; max-width: 90vw;
+}
+#bgRenderPill.show { display: flex; animation: fadeSlide 0.2s ease; }
+.pill-spin {
+  width: 14px; height: 14px; border-radius: 50%;
+  border: 2px solid rgba(245,158,11,0.25); border-top-color: var(--gold);
+  animation: mahaSpin 0.8s linear infinite; flex-shrink: 0;
+}
+@keyframes mahaSpin { to { transform: rotate(360deg); } }
+
+
+.track-add-btn {
+  background: var(--gold) !important; color: #090b0f !important; border-color: var(--gold) !important;
+  font-weight: 900; font-size: 13px !important; padding: 0 6px !important;
+  min-width: 22px !important; height: 20px !important; border-radius: 4px; flex-shrink: 0;
+}
+#clipQuickBar {
+  display: none; align-items: center; gap: 5px; padding: 4px 8px;
+  background: linear-gradient(90deg, rgba(245,158,11,0.16), var(--bg-2));
+  border-bottom: 1px solid var(--gold); overflow-x: auto; scrollbar-width: none;
+  flex-shrink: 0;
+}
+#clipQuickBar.show { display: flex; }
+#clipQuickBar::-webkit-scrollbar { display: none; }
+#clipQuickBar button { padding: 3px 8px; font-size: 10.5px; min-height: 26px; flex-shrink: 0; }
+
+
+.lane-plus-btn {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 24px; height: 24px; min-width: 24px; min-height: 24px; padding: 0;
+  border-radius: 50%; background: var(--gold); color: #090b0f;
+  border: 2px solid #090b0f; font-weight: 900; font-size: 15px; line-height: 1;
+  z-index: 8; box-shadow: 0 2px 8px rgba(0,0,0,0.75);
+}
+.lane-plus-btn.between {
+  width: 20px; height: 20px; min-width: 20px; min-height: 20px; font-size: 13px;
+  background: var(--cyan); color: #051318; transform: translate(-50%, -50%);
+}
+.sec-badge {
+  font-family: var(--mono); font-size: 10px; color: var(--cyan);
+  background: var(--bg-0); padding: 2px 6px; border-radius: 4px;
+  border: 1px solid var(--border); white-space: nowrap; flex-shrink: 0;
+}
+
+
+.clip-filmstrip {
+  position: absolute; inset: 0; display: flex; flex-direction: row;
+  overflow: hidden; pointer-events: none; z-index: 1; opacity: 0.92;
+}
+.fs-tile {
+  position: relative; height: 100%; flex-shrink: 0; overflow: hidden;
+  border-right: 1px solid rgba(0,0,0,0.55); background: #000;
+}
+.fs-tile img, .fs-tile canvas {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.fs-sec {
+  position: absolute; bottom: 1px; left: 2px;
+  font-family: var(--mono); font-size: 8.5px; font-weight: 700;
+  color: #fff; background: rgba(0,0,0,0.68); padding: 0 3px; border-radius: 2px;
+  line-height: 1.2;
+}
+.clip-el.has-filmstrip .clip-label {
+  position: absolute; top: 1px; left: 9px; font-size: 9.5px;
+  background: rgba(0,0,0,0.62); padding: 0 4px; border-radius: 2px;
+}
+.track-lane.video-lane, .track-header.video-hdr { height: 54px; min-height: 54px; }
+.track-lane.video-lane .clip-el { height: 46px; top: 4px; }
+
+
+:root { --tr-h: 44px; --vid-h: 54px; }
+#timelineResizer {
+  height: 10px; min-height: 10px; background: var(--bg-2);
+  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  cursor: ns-resize; display: flex; align-items: center; justify-content: center;
+  touch-action: none; flex-shrink: 0; z-index: 16;
+}
+#timelineResizer::after {
+  content: ''; width: 42px; height: 3px; border-radius: 2px; background: var(--border-light);
+}
+#timelineResizer:hover::after, #timelineResizer:active::after { background: var(--gold); }
+.track-header, .track-lane { height: var(--tr-h) !important; min-height: var(--tr-h) !important; }
+.track-header.video-hdr, .track-lane.video-lane { height: var(--vid-h) !important; min-height: var(--vid-h) !important; }
+.track-lane .clip-el { height: calc(var(--tr-h) - 8px) !important; top: 4px !important; }
+.track-lane.video-lane .clip-el { height: calc(var(--vid-h) - 8px) !important; top: 4px !important; }
+
 /* ANDROID / MOBILE BOTTOM DOCK */
 #mobileBottomNav {
   display: none; height: 58px; min-height: 58px; background: var(--bg-1);
@@ -490,21 +625,28 @@ input[type="color"] { padding: 1px; height: 26px; width: 38px; cursor: pointer; 
   .panel-header { height: 42px; min-height: 42px; padding: 0 12px; font-size: 13px; }
   #btnCloseLeft, #btnCloseRight { min-width: 34px; min-height: 34px; font-size: 14px; background: var(--bg-3); }
 
-  /* Touch-Optimized Multi-Track Timeline */
-  #timelineSection { height: 205px; min-height: 175px; }
+  /* Touch-Optimized Multi-Track Timeline — ALL tracks visible simultaneously on Android! */
+  #workspace { flex: 1; min-height: 170px; }
+  #timelineSection { height: 42dvh; min-height: 252px; max-height: 55dvh; flex-shrink: 0; }
+  #timelineSection.tl-expanded { height: 62dvh !important; max-height: 68dvh !important; }
   #timelineToolbar {
-    height: 40px; min-height: 40px; padding: 0 6px; gap: 5px;
+    height: 36px; min-height: 36px; padding: 0 6px; gap: 5px;
     overflow-x: auto; -webkit-overflow-scrolling: touch; touch-action: pan-x; scrollbar-width: none;
   }
   #timelineToolbar::-webkit-scrollbar { display: none; }
-  #timelineToolbar button, #timelineToolbar select { min-height: 32px; font-size: 11px; flex-shrink: 0; }
-  #sceneTabsBar { height: 28px; min-height: 28px; }
-  #trackHeaders { width: 82px; min-width: 78px; }
-  .track-header { padding: 3px 4px; }
+  #timelineToolbar button, #timelineToolbar select { min-height: 28px; padding: 3px 7px; font-size: 10.5px; flex-shrink: 0; }
+  #sceneTabsBar { height: 24px; min-height: 24px; }
+  #trackHeaders { width: 78px; min-width: 74px; }
+  .track-header, .track-lane { height: 38px; min-height: 38px; }
+  .track-header.video-hdr, .track-lane.video-lane { height: 48px; min-height: 48px; }
+  .track-lane.video-lane .clip-el { height: 42px; top: 3px; }
+  .clip-el { top: 3px; height: 32px; font-size: 10.5px; }
+  .track-header { padding: 2px 4px; }
+  .track-name { font-size: 10px; }
   .track-badge { display: none; }
   .track-vol, .track-controls [data-act="del"] { display: none; }
-  .track-controls button { min-width: 22px; height: 22px; font-size: 10px; }
-  .clip-handle { width: 18px; background: rgba(245,158,11,0.22); }
+  .track-controls button { min-width: 20px; height: 18px; font-size: 9.5px; padding: 0 3px; }
+  .clip-handle { width: 16px; background: rgba(245,158,11,0.25); }
   input[type="range"] { height: 6px; }
   input[type="range"]::-webkit-slider-thumb { width: 20px; height: 20px; }
 
@@ -536,6 +678,9 @@ input[type="color"] { padding: 1px; height: 26px; width: 38px; cursor: pointer; 
     <div class="top-actions">
       <button id="btnNewProject" title="New Project">📄 <span class="hide-sm">New</span></button>
       <button id="btnSaveProject" title="Save Project (Ctrl+S)">💾 <span class="hide-sm">Save</span></button>
+      <button id="btnQuickStart" class="cyan" title="1-Tap Movie & Reel Templates">🚀 <span class="hide-sm">Templates</span></button>
+      <button id="btnEasyMode" title="Switch between Easy Mode & Pro Hollywood Mode">✨ <span id="easyModeLbl">Pro</span></button>
+      <button id="btnLangToggle" title="Switch Hindi / English UI" class="hide-sm">🌐 हिं</button>
       <button id="btnUndo" title="Undo (Ctrl+Z)">↶</button>
       <button id="btnRedo" title="Redo (Ctrl+Y)">↷</button>
       <button id="btnSettings" title="Project Settings">⚙</button>
@@ -577,6 +722,8 @@ input[type="color"] { padding: 1px; height: 26px; width: 38px; cursor: pointer; 
           </select>
           <button id="btnBeforeAfter" title="Before / After Color Grading Split Comparison" style="padding:2px 6px;font-size:10px;min-height:22px;">🌓 B/A</button>
           <button id="btnScopesToggle" title="Live RGB Histogram & Luma Video Scope" style="padding:2px 6px;font-size:10px;min-height:22px;">📊 Scope</button>
+          <button id="btnDrawMode" title="Draw Glowing Neon Arrows / Doodles on Video" style="padding:2px 6px;font-size:10px;min-height:22px;">✏️ Draw</button>
+          <button id="btnCinemaBars" title="Toggle 2.39:1 Hollywood Anamorphic Black Bars" style="padding:2px 6px;font-size:10px;min-height:22px;">🎬 Bars</button>
           <button id="btnPosterExport" title="Save Current Frame as Full-HD Poster / YouTube Thumbnail" style="padding:2px 6px;font-size:10.5px;min-height:22px;">🖼 Poster</button>
           <button id="btnFreezeFrame" title="Capture Freeze Frame to Timeline" style="padding:2px 6px;font-size:10.5px;">📸 Freeze</button>
           <button id="btnPreviewFullscreen" title="Fullscreen Preview" style="padding:2px 6px;font-size:10.5px;">⛶</button>
@@ -589,6 +736,7 @@ input[type="color"] { padding: 1px; height: 26px; width: 38px; cursor: pointer; 
         <canvas id="videoScopeCanvas" width="190" height="78" style="position:absolute;top:10px;right:10px;background:rgba(8,10,14,0.84);border:1px solid var(--border-light);border-radius:5px;display:none;pointer-events:none;z-index:12;"></canvas>
         <div id="canvasModeBanner">
           <span id="canvasModeText">Mode Active</span>
+          <input type="color" id="drawStrokeCol" value="#facc15" style="display:none;width:26px;height:22px;padding:0;" title="Neon Brush Color">
           <button id="btnCanvasModeDone" class="primary" style="padding:2px 8px;font-size:10px;">✓ Finish</button>
           <button id="btnCanvasModeCancel" style="padding:2px 8px;font-size:10px;">✕ Cancel</button>
         </div>
@@ -630,6 +778,8 @@ input[type="color"] { padding: 1px; height: 26px; width: 38px; cursor: pointer; 
     </aside>
   </div>
 
+  <!-- DRAGGABLE TIMELINE HEIGHT RESIZER -->
+  <div id="timelineResizer" title="Drag up or down to resize Timeline height"></div>
   <!-- BOTTOM MULTI-TRACK TIMELINE -->
   <section id="timelineSection">
     <div id="timelineToolbar">
@@ -664,13 +814,29 @@ input[type="color"] { padding: 1px; height: 26px; width: 38px; cursor: pointer; 
           <option value="music">Music Track</option>
         </select>
         <button id="btnAddTrack" title="Add Track">+ Track</button>
+        <button id="btnExpandTimeline" class="mobile-only" title="Expand / Shrink Timeline Height">⇕ Tall</button>
       </div>
-      <div class="transport-group">
-        <span style="font-size:10px;color:var(--text-2);">Zoom</span>
-        <input type="range" id="timelineZoom" min="10" max="300" value="75" style="width:90px;">
+      <div class="transport-group" style="gap:3px;">
+        <button id="btnTrackSize" title="Resize Track Height (Small / Medium / Large)" style="padding:2px 6px;font-size:10.5px;">↕ Trk:M</button>
+        <button id="btnZoomOut" title="Zoom Out Timeline (-)" style="padding:2px 6px;min-width:24px;">−</button>
+        <input type="range" id="timelineZoom" min="8" max="300" value="75" style="width:76px;">
+        <button id="btnZoomIn" title="Zoom In Timeline (+)" style="padding:2px 6px;min-width:24px;">+</button>
+        <button id="btnZoomFit" title="Fit Entire Movie Timeline to Screen" style="padding:2px 6px;font-size:10px;">Fit</button>
       </div>
     </div>
 
+    <div id="clipQuickBar">
+      <span id="clipQuickName" style="font-size:10.5px;font-weight:700;color:var(--gold);max-width:95px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Clip</span>
+      <span id="clipSecReadout" class="sec-badge">0.0s–4.0s (4.0s)</span>
+      <button id="cqSplit" class="primary">✂ Split</button>
+      <button id="cqTrimL" title="Trim Start to Playhead">◧ Trim L</button>
+      <button id="cqTrimR" title="Trim End to Playhead">◨ Trim R</button>
+      <button id="cqStepMinus" title="Shorten Clip by 0.5s">-0.5s</button>
+      <button id="cqStepPlus" title="Extend Clip by 0.5s">+0.5s</button>
+      <button id="cqDup">⧉ Dup</button>
+      <button id="cqEdit" class="cyan">🎛 Edit</button>
+      <button id="cqRemove" class="danger">🗑 Remove</button>
+    </div>
     <div id="sceneTabsBar">
       <span style="font-size:10px;color:var(--text-2);margin-right:4px;">SCENES:</span>
       <div id="sceneTabsList" style="display:flex;gap:4px;"></div>
@@ -680,8 +846,8 @@ input[type="color"] { padding: 1px; height: 26px; width: 38px; cursor: pointer; 
     <div id="timelineBody">
       <div id="trackHeaders">
         <div id="rulerCorner">
-          <span>TRACKS</span>
-          <span id="trackCountBadge">4</span>
+          <span>TRACKS (<b id="trackCountBadge">4</b>)</span>
+          <button id="btnOpenNewTrackModal" class="cyan" style="padding:1px 6px;font-size:10px;min-height:19px;font-weight:800;" title="Add New Timeline Track">+ Track</button>
         </div>
         <div id="trackHeadersList"></div>
       </div>
@@ -832,8 +998,21 @@ input[type="color"] { padding: 1px; height: 26px; width: 38px; cursor: pointer; 
           <option value="davinci">DaVinci Resolve Style (B=Blade)</option>
         </select>
       </div>
+      <div class="prop-group">
+        <div class="prop-title">🎬 Channel Brand Kit & Watermark</div>
+        <div class="prop-row"><label>Cinema Bars</label><input type="checkbox" id="setCinemaBars"></div>
+        <div class="prop-row"><label>Channel Logo</label><button id="btnUploadWatermark" class="cyan" style="padding:2px 8px;font-size:10.5px;">Upload PNG</button><button id="btnClearWatermark" style="padding:2px 6px;font-size:10.5px;">Clear</button><input type="file" id="watermarkInp" accept="image/*" style="display:none;"></div>
+        <div class="prop-row"><label>Corner</label>
+          <select id="setWmPos"><option value="tr">Top-Right</option><option value="tl">Top-Left</option><option value="br">Bottom-Right</option><option value="bl">Bottom-Left</option></select>
+        </div>
+        <div class="prop-row"><label>Opacity</label><input type="range" id="setWmOp" min="0.1" max="1" step="0.05" value="0.75"></div>
+      </div>
       <div class="prop-row"><label>Offline App</label>
-        <button id="btnDownloadOfflineApp" class="cyan" style="padding:3px 8px;font-size:11px;">📲 Save Offline HTML App</button>
+        <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;">
+          <button id="btnInstallPwaApp" class="primary" style="padding:3px 8px;font-size:11px;">📲 Install App (Android/PC)</button>
+          <button id="btnBuildApkExeKit" class="cyan" style="padding:3px 8px;font-size:11px;">📦 APK / EXE Builder ZIP</button>
+          <button id="btnDownloadOfflineApp" style="padding:3px 8px;font-size:11px;">💾 Offline HTML</button>
+        </div>
       </div>
       <div class="prop-row"><label>Auto-Save</label>
         <select id="setAutoSave"><option value="1">Enabled (Every 30s)</option><option value="0">Disabled</option></select>
@@ -874,6 +1053,54 @@ input[type="color"] { padding: 1px; height: 26px; width: 38px; cursor: pointer; 
   </div>
 </div>
 
+<!-- 1-TAP QUICK START TEMPLATES MODAL -->
+<div class="modal-backdrop" id="quickStartModal">
+  <div class="modal-box" style="width:540px;">
+    <div class="modal-head">
+      <span>🚀 Quick Start — आप क्या बनाना चाहते हैं?</span>
+      <button class="icon-btn" id="btnCloseQuickStart">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="font-size:11.5px;color:var(--text-1);">किसी भी टेम्पलेट पर 1 क्लिक करें और पूरा सीन, VFX, टाइटल और म्यूज़िक अपने आप सेट हो जाएगा:</div>
+      <div class="grid-2" id="quickStartGrid">
+        <button class="tpl-card" data-qs="mythology">
+          <div style="font-size:20px;">🕉 रामायण / महाभारत</div>
+          <div style="font-size:10.5px;color:var(--text-2);">16:9 • Ancient Temple, Divine Rays, Shankh & 3D Gold Title</div>
+        </button>
+        <button class="tpl-card" data-qs="reels">
+          <div style="font-size:20px;">📱 Reels / Shorts (9:16)</div>
+          <div style="font-size:10.5px;color:var(--text-2);">9:16 Vertical • Safe-Zone Guides, Karaoke Captions & Sparks</div>
+        </button>
+        <button class="tpl-card" data-qs="scifi">
+          <div style="font-size:20px;">🚀 Sci-Fi Space Movie</div>
+          <div style="font-size:10.5px;color:var(--text-2);">16:9 • Spiral Galaxy, Cosmic Portal, Neon Title & Warp SFX</div>
+        </button>
+        <button class="tpl-card" data-qs="horror">
+          <div style="font-size:20px;">👻 Horror Short Film</div>
+          <div style="font-size:10.5px;color:var(--text-2);">16:9 • Haunted House, Real Bhoot Ghost FX, Bats & Stinger</div>
+        </button>
+        <button class="tpl-card" data-qs="action">
+          <div style="font-size:20px;">💥 Action Bomb Trailer</div>
+          <div style="font-size:10.5px;color:var(--text-2);">16:9 • Battlefield, Real Bomb Blast, Fire & Impact Boom</div>
+        </button>
+        <button class="tpl-card" data-qs="blank">
+          <div style="font-size:20px;">🎬 Blank + Import Gallery</div>
+          <div style="font-size:10.5px;color:var(--text-2);">Empty Timeline • Seedhe apne phone/PC se video & photo chunein</div>
+        </button>
+      </div>
+      <div class="prop-group" style="margin-top:4px;">
+        <div class="prop-title">60 Second mein Movie kaise banayein?</div>
+        <div style="font-size:11px;color:var(--text-1);line-height:1.55;">
+          <b>1.</b> Neeche/Baएँ <b>Media</b> se apna video/photo chunein (ya template select karein).<br>
+          <b>2.</b> <b>VFX</b>, <b>Text</b> aur <b>Audio</b> se effects aur Hindi/English title jodein.<br>
+          <b>3.</b> Clip par tap karke <b>Split / Delete / Edit</b> karein.<br>
+          <b>4.</b> Upar golden <b>⬇ Export</b> dabakar apni movie save karein!
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- SHORTCUTS / DIALOG MODAL -->
 <div class="modal-backdrop" id="dialogModal">
   <div class="modal-box" style="width:420px;">
@@ -883,6 +1110,117 @@ input[type="color"] { padding: 1px; height: 26px; width: 38px; cursor: pointer; 
     </div>
     <div class="modal-body" id="dialogBody"></div>
     <div class="modal-foot" id="dialogFoot"></div>
+  </div>
+</div>
+
+<!-- FULL-SCREEN CINEMATIC RENDER DISPLAY -->
+<div id="renderScreenOverlay">
+  <div style="font-size:11px;letter-spacing:1.5px;color:var(--gold);font-weight:700;text-transform:uppercase;">MAHAINDUSTRIES RENDER ENGINE V4</div>
+  <div class="render-ring-wrap">
+    <svg viewBox="0 0 120 120">
+      <defs>
+        <linearGradient id="renderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#f59e0b"/>
+          <stop offset="100%" stop-color="#06b6d4"/>
+        </linearGradient>
+      </defs>
+      <circle cx="60" cy="60" r="52" fill="none" stroke="#1e2532" stroke-width="8"/>
+      <circle id="renderRingCircle" cx="60" cy="60" r="52" fill="none" stroke="url(#renderGrad)" stroke-width="8" stroke-linecap="round" stroke-dasharray="326.73" stroke-dashoffset="326.73" style="transition:stroke-dashoffset 0.15s ease;"/>
+    </svg>
+    <div class="render-pct-big" id="renderPctBig">0%</div>
+  </div>
+  <div style="max-width:380px;">
+    <div id="renderScreenTitle" style="font-size:15px;font-weight:700;color:var(--text-0);margin-bottom:4px;">Rendering Your Movie...</div>
+    <div id="renderScreenSub" style="font-size:11.5px;color:var(--text-1);">Preparing video frames & audio mix</div>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:6px;">
+    <button id="btnMinimizeRender" class="cyan" style="padding:8px 14px;font-size:12px;">⬇ Minimize (Edit in Background)</button>
+    <button id="btnScreenPause" style="padding:8px 12px;">⏸ Pause</button>
+    <button id="btnScreenCancel" class="danger" style="padding:8px 12px;">✕ Cancel</button>
+  </div>
+</div>
+
+<!-- BACKGROUND RENDER NOTIFICATION PILL -->
+<div id="bgRenderPill" title="Tap to open full Render Display">
+  <div class="pill-spin"></div>
+  <div style="display:flex;flex-direction:column;gap:2px;min-width:110px;">
+    <div style="display:flex;justify-content:space-between;gap:8px;font-size:11px;font-weight:700;">
+      <span style="color:var(--text-0);">Exporting</span>
+      <span id="bgPillPct" style="color:var(--gold);font-family:var(--mono);">0%</span>
+    </div>
+    <div style="width:100%;height:4px;background:var(--bg-4);border-radius:2px;overflow:hidden;">
+      <div id="bgPillBar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--gold),var(--cyan));"></div>
+    </div>
+  </div>
+  <span style="font-size:10px;color:var(--cyan);font-weight:700;">↗ Open</span>
+</div>
+
+<!-- FILE DOWNLOADED SUCCESS POPUP -->
+<div class="modal-backdrop" id="exportDoneModal">
+  <div class="modal-box" style="width:440px;">
+    <div class="modal-head" style="background:linear-gradient(90deg,rgba(16,185,129,0.22),var(--bg-1));">
+      <span>✅ File Downloaded Successfully!</span>
+      <button class="icon-btn" id="btnCloseDoneModal">✕</button>
+    </div>
+    <div class="modal-body" style="text-align:center;">
+      <div style="font-size:34px;">🎉</div>
+      <div id="doneFileName" style="font-weight:700;font-size:14px;color:var(--text-0);">Movie.webm</div>
+      <div id="doneFileMeta" style="font-size:11.5px;color:var(--green);">File saved to your device Downloads folder!</div>
+      <div id="donePreviewBox" style="margin-top:6px;"></div>
+    </div>
+    <div class="modal-foot" style="justify-content:center;">
+      <a id="doneDownloadAgainLink" href="#" download style="text-decoration:none;"><button class="cyan">⬇ Download Again</button></a>
+      <button id="btnBackToHome" class="primary">🏠 Back to Studio Home</button>
+    </div>
+  </div>
+</div>
+
+<!-- TRACK '+' QUICK ADD PICKER MODAL -->
+<div class="modal-backdrop" id="trackAddModal">
+  <div class="modal-box" style="width:460px;">
+    <div class="modal-head">
+      <span id="trackAddTitle">➕ Add Item to Track</span>
+      <button class="icon-btn" id="btnCloseTrackAdd">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="trackAddSub" style="font-size:11px;color:var(--text-1);">Choose what to add at current playhead position:</div>
+      <div class="grid-3" id="trackAddGrid">
+        <button class="tpl-card" data-tadd="video" style="align-items:center;text-align:center;"><span style="font-size:20px;">🎞</span><b>Video / Photo</b></button>
+        <button class="tpl-card" data-tadd="audio_file" style="align-items:center;text-align:center;"><span style="font-size:20px;">🎵</span><b>Audio File</b></button>
+        <button class="tpl-card" data-tadd="vfx" style="align-items:center;text-align:center;"><span style="font-size:20px;">✨</span><b>Video FX</b></button>
+        <button class="tpl-card" data-tadd="text" style="align-items:center;text-align:center;"><span style="font-size:20px;">𝐓</span><b>Text / Title</b></button>
+        <button class="tpl-card" data-tadd="animation" style="align-items:center;text-align:center;"><span style="font-size:20px;">🎬</span><b>Animation</b></button>
+        <button class="tpl-card" data-tadd="stickers" style="align-items:center;text-align:center;"><span style="font-size:20px;">⭐</span><b>Stickers</b></button>
+        <button class="tpl-card" data-tadd="backgrounds" style="align-items:center;text-align:center;"><span style="font-size:20px;">🌄</span><b>Background</b></button>
+        <button class="tpl-card" data-tadd="sfx" style="align-items:center;text-align:center;"><span style="font-size:20px;">🔊</span><b>Sound FX</b></button>
+        <button class="tpl-card" data-tadd="music" style="align-items:center;text-align:center;"><span style="font-size:20px;">🎹</span><b>AI Music</b></button>
+        <button class="tpl-card" data-tadd="censor" style="align-items:center;text-align:center;"><span style="font-size:20px;">🕵️</span><b>Blur Censor</b></button>
+        <button class="tpl-card" data-tadd="draw" style="align-items:center;text-align:center;"><span style="font-size:20px;">✏️</span><b>Neon Draw</b></button>
+      </div>
+      <input type="file" id="directTrackVideoInp" accept="video/*,image/*" style="display:none;">
+      <input type="file" id="directTrackAudioInp" accept="audio/*" style="display:none;">
+    </div>
+  </div>
+</div>
+
+<!-- ADD NEW TIMELINE TRACK MODAL -->
+<div class="modal-backdrop" id="newTrackModal">
+  <div class="modal-box" style="width:420px;">
+    <div class="modal-head">
+      <span>➕ Add New Timeline Track</span>
+      <button class="icon-btn" id="btnCloseNewTrack">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="font-size:11px;color:var(--text-1);">Select the type of new timeline track to add:</div>
+      <div class="grid-2" id="newTrackGrid">
+        <button class="tpl-card" data-nt="video"><b>🎞 Video / Photo Track</b><span style="font-size:10px;color:var(--text-2);">Videos, Photos & Scenes</span></button>
+        <button class="tpl-card" data-nt="text"><b>𝐓 Text / Subtitle Track</b><span style="font-size:10px;color:var(--text-2);">Titles, Captions & Credits</span></button>
+        <button class="tpl-card" data-nt="vfx"><b>✨ VFX Effects Track</b><span style="font-size:10px;color:var(--text-2);">Rain, Fire, Bomb, Bhoot FX</span></button>
+        <button class="tpl-card" data-nt="overlay"><b>🖼 Overlay / Sticker Track</b><span style="font-size:10px;color:var(--text-2);">PiP, Stickers, Blur & Draw</span></button>
+        <button class="tpl-card" data-nt="audio"><b>🔊 Audio / SFX Track</b><span style="font-size:10px;color:var(--text-2);">Voiceover & Sound Effects</span></button>
+        <button class="tpl-card" data-nt="music"><b>🎵 Music Track</b><span style="font-size:10px;color:var(--text-2);">Background Soundtrack</span></button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1144,6 +1482,10 @@ const State = {
   directorMarkers: [],
   showScopes: false,
   beforeAfter: false,
+  cinemaBars: false,
+  watermark: { img: null, pos: 'tr', opacity: 0.75 },
+  voiceChanger: 'normal',
+  tempDrawPaths: [],
   renderQueue: [],
   exportPaused: false,
   lastExportUrls: [],
@@ -2512,6 +2854,35 @@ function applyChromaKeyToCanvas(ctx, w, h, chroma) {
 }
 
 // Clean unified compositor (replaces above helper with proper -w/2,-h/2 alignment)
+// Real 3x3 Unsharp-Mask Convolution Filter (Unblurs & Sharpens soft/low-res video frames!)
+function applyUnblurSharpen(ctx, w, h, amount = 0.7) {
+  if (!amount || amount <= 0.01) return;
+  try {
+    const img = ctx.getImageData(0, 0, w, h);
+    const src = img.data;
+    const out = new Uint8ClampedArray(src.length);
+    const k = clamp(amount, 0, 2.5);
+    const center = 1 + 4 * k;
+    const stride = w * 4;
+    for (let y = 1; y < h - 1; y++) {
+      let row = y * stride;
+      for (let x = 1; x < w - 1; x++) {
+        const i = row + x * 4;
+        for (let c = 0; c < 3; c++) {
+          const val = src[i + c] * center
+            - k * (src[i - 4 + c] + src[i + 4 + c] + src[i - stride + c] + src[i + stride + c]);
+          out[i + c] = val < 0 ? 0 : (val > 255 ? 255 : val);
+        }
+        out[i + 3] = src[i + 3];
+      }
+    }
+    // Copy edges cleanly
+    for (let x = 0; x < w * 4; x++) { out[x] = src[x]; out[(h - 1) * stride + x] = src[(h - 1) * stride + x]; }
+    img.data.set(out);
+    ctx.putImageData(img, 0, 0);
+  } catch (e) {}
+}
+
 function renderFrameAt(targetCtx, w, h, time) {
   targetCtx.save();
   targetCtx.fillStyle = State.bgColor || '#000000';
@@ -2626,6 +2997,39 @@ function renderFrameAt(targetCtx, w, h, time) {
         targetCtx.translate(-w / 2, -h / 2);
         const rampMult = evalSpeedRamp(clip, localT);
         drawProceduralVFX(targetCtx, clip.vfxId, w, h, localT * (clip.speed || 1) * rampMult, clip.intensity || 1);
+      } else if (clip.kind === 'censor') {
+        // Real Privacy Pixelate / Mosaic Blur Censor Box (movable, scalable, 2D-trackable!)
+        const bw = Math.round(w * 0.24), bh = Math.round(h * 0.24);
+        targetCtx.fillStyle = 'rgba(18,22,30,0.88)';
+        targetCtx.fillRect(-bw / 2, -bh / 2, bw, bh);
+        const cell = 12;
+        for (let py = -bh / 2; py < bh / 2; py += cell) {
+          for (let px = -bw / 2; px < bw / 2; px += cell) {
+            const shade = 26 + ((Math.abs(px * 7 + py * 13) % 45));
+            targetCtx.fillStyle = `rgba(${shade},${shade+6},${shade+14},0.85)`;
+            targetCtx.fillRect(px, py, cell - 1, cell - 1);
+          }
+        }
+        targetCtx.strokeStyle = 'rgba(255,255,255,0.22)'; targetCtx.lineWidth = 1.5;
+        targetCtx.strokeRect(-bw / 2, -bh / 2, bw, bh);
+      } else if (clip.kind === 'drawing' && clip.drawPaths) {
+        // Live Hand-Drawn Glowing Neon Strokes / Arrows
+        targetCtx.save();
+        targetCtx.translate(-w / 2, -h / 2);
+        targetCtx.lineCap = 'round'; targetCtx.lineJoin = 'round';
+        clip.drawPaths.forEach(path => {
+          if (!path.pts || path.pts.length < 2) return;
+          targetCtx.strokeStyle = path.color || '#facc15';
+          targetCtx.lineWidth = (path.width || 5) * (w / 960);
+          targetCtx.shadowColor = path.color || '#facc15'; targetCtx.shadowBlur = 14;
+          targetCtx.beginPath();
+          path.pts.forEach((pt, idx) => {
+            if (idx === 0) targetCtx.moveTo(pt.x * w, pt.y * h);
+            else targetCtx.lineTo(pt.x * w, pt.y * h);
+          });
+          targetCtx.stroke();
+        });
+        targetCtx.restore();
       } else if (clip.kind === 'sticker') {
         targetCtx.font = `${Math.floor(Math.min(w, h) * 0.24)}px system-ui, sans-serif`;
         targetCtx.textAlign = 'center'; targetCtx.textBaseline = 'middle';
@@ -2717,6 +3121,13 @@ function renderFrameAt(targetCtx, w, h, time) {
             offCtx.clearRect(0, 0, offCanvas.width, offCanvas.height);
             offCtx.drawImage(media.el, 0, 0, offCanvas.width, offCanvas.height);
             applyChromaKeyToCanvas(offCtx, offCanvas.width, offCanvas.height, clip.chroma);
+            targetCtx.drawImage(offCanvas, -dw / 2, -dh / 2, dw, dh);
+          } else if (cf.sharpen > 0) {
+            offCanvas.width = Math.max(2, Math.floor(dw));
+            offCanvas.height = Math.max(2, Math.floor(dh));
+            offCtx.imageSmoothingEnabled = true; offCtx.imageSmoothingQuality = 'high';
+            offCtx.drawImage(media.el, 0, 0, offCanvas.width, offCanvas.height);
+            applyUnblurSharpen(offCtx, offCanvas.width, offCanvas.height, cf.sharpen / 50);
             targetCtx.drawImage(offCanvas, -dw / 2, -dh / 2, dw, dh);
           } else {
             targetCtx.drawImage(media.el, -dw / 2, -dh / 2, dw, dh);
@@ -2843,6 +3254,39 @@ function renderFrameAt(targetCtx, w, h, time) {
     targetCtx.fillStyle = hg; targetCtx.fillRect(0, 0, w, h);
     targetCtx.restore();
   }
+  // Live in-progress Neon Draw strokes on Preview
+  if (targetCtx === pCtx && State.canvasMode === 'draw' && State.tempDrawPaths.length) {
+    targetCtx.save(); targetCtx.lineCap = 'round'; targetCtx.lineJoin = 'round';
+    State.tempDrawPaths.forEach(path => {
+      if (path.pts.length < 2) return;
+      targetCtx.strokeStyle = path.color || '#facc15'; targetCtx.lineWidth = 5;
+      targetCtx.shadowColor = path.color || '#facc15'; targetCtx.shadowBlur = 14;
+      targetCtx.beginPath();
+      path.pts.forEach((pt, idx) => idx === 0 ? targetCtx.moveTo(pt.x * w, pt.y * h) : targetCtx.lineTo(pt.x * w, pt.y * h));
+      targetCtx.stroke();
+    });
+    targetCtx.restore();
+  }
+  // Hollywood 2.39:1 Anamorphic Black Cinema Bars (baked into preview & export!)
+  if (State.cinemaBars) {
+    const barH = Math.round(h * 0.115);
+    targetCtx.fillStyle = '#000000';
+    targetCtx.fillRect(0, 0, w, barH);
+    targetCtx.fillRect(0, h - barH, w, barH);
+  }
+  // Channel Brand Kit Watermark Logo
+  if (State.watermark && State.watermark.img) {
+    targetCtx.save();
+    targetCtx.globalAlpha = State.watermark.opacity ?? 0.75;
+    const wmW = Math.round(w * 0.13);
+    const wmH = Math.round((State.watermark.img.naturalHeight / Math.max(1, State.watermark.img.naturalWidth)) * wmW);
+    const pad = Math.round(w * 0.025);
+    const pos = State.watermark.pos || 'tr';
+    const wx = pos.includes('r') ? (w - wmW - pad) : pad;
+    const wy = pos.includes('b') ? (h - wmH - pad) : pad;
+    targetCtx.drawImage(State.watermark.img, wx, wy, wmW, wmH);
+    targetCtx.restore();
+  }
   // Global Vignette if any clip has vignette or cinematic look
   const sel = getSelectedClip();
   if (sel && sel.fx && sel.fx.vignette > 0) {
@@ -2962,7 +3406,8 @@ function startAudioForPlayback(fromTime) {
       if (!buf) return;
       const src = ctx.createBufferSource();
       src.buffer = buf;
-      src.playbackRate.value = clip.speed || 1;
+      const vcMult = State.voiceChanger === 'demon' ? 0.72 : (State.voiceChanger === 'god' ? 0.84 : (State.voiceChanger === 'chipmunk' ? 1.42 : 1));
+      src.playbackRate.value = clamp((clip.speed || 1) * vcMult, 0.25, 4);
       const g = ctx.createGain();
       const vol = (clip.volume ?? 1) * (tr.volume ?? 1);
       const delay = Math.max(0, clip.start - fromTime);
@@ -3068,13 +3513,19 @@ function findOrCreateTrack(type) {
 
 function addClipToTimeline(clipData, trackType = 'video') {
   pushHistory();
-  const tr = findOrCreateTrack(trackType);
+  let tr = null;
+  if (State.targetAddTrackId) {
+    tr = State.tracks.find(t => t.id === State.targetAddTrackId && !t.locked) || null;
+    State.targetAddTrackId = null;
+  }
+  State.targetAddTime = null;
+  if (!tr) tr = findOrCreateTrack(trackType);
   const clip = Object.assign({
     id: uid('clip'),
     trackId: tr.id,
     name: 'Clip',
     kind: 'bg',
-    start: Math.max(0, Number(State.currentTime.toFixed(2))),
+    start: Math.max(0, Number((State.targetAddTime !== null && State.targetAddTime !== undefined ? State.targetAddTime : State.currentTime).toFixed(2))),
     duration: 4,
     trimStart: 0,
     x: 0, y: 0, scale: 1, rotation: 0, opacity: 1,
@@ -3104,16 +3555,16 @@ function updatePlayheadUI() {
 
 function renderRuler() {
   const canvas = $('timeRuler');
-  const totalW = Math.max($('timelineScroll').clientWidth, Math.ceil((State.duration + 6) * State.zoom));
+  const totalW = Math.max($('timelineScroll').clientWidth + 120, Math.ceil((State.duration + 12) * State.zoom) + 160);
   canvas.width = totalW;
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = '#161b24'; ctx.fillRect(0, 0, totalW, 24);
   ctx.strokeStyle = '#364259'; ctx.fillStyle = '#8b95a9'; ctx.font = '10px monospace';
-  const stepSec = State.zoom < 40 ? 2 : 1;
-  for (let s = 0; s <= State.duration + 6; s += stepSec) {
+  const stepSec = State.zoom >= 150 ? 0.5 : (State.zoom >= 50 ? 1 : (State.zoom >= 24 ? 2 : (State.zoom >= 14 ? 5 : 10)));
+  for (let s = 0; s <= State.duration + 12; s = Number((s + stepSec).toFixed(2))) {
     const x = Math.floor(s * State.zoom) + 0.5;
     ctx.beginPath(); ctx.moveTo(x, 12); ctx.lineTo(x, 24); ctx.stroke();
-    ctx.fillText(s + 's', x + 3, 11);
+    ctx.fillText((Number.isInteger(s) ? s : s.toFixed(1)) + 's', x + 3, 11);
   }
   // Draw Audio Beat Markers
   if (State.beatMarkers && State.beatMarkers.length) {
@@ -3138,24 +3589,29 @@ function renderRuler() {
 function renderTimeline() {
   $('trackCountBadge').textContent = State.tracks.length;
   renderRuler();
-  const totalW = Math.max($('timelineScroll').clientWidth, Math.ceil((State.duration + 6) * State.zoom));
+  const totalW = Math.max($('timelineScroll').clientWidth + 120, Math.ceil((State.duration + 12) * State.zoom) + 160);
   const headersEl = $('trackHeadersList');
   const lanesWrap = $('tracksCanvasArea');
   headersEl.innerHTML = '';
   // Preserve playhead
   const ph = $('playheadLine');
   lanesWrap.innerHTML = '';
+  const sz = State.trackSizeHeights || { tr: 44, vid: 54 };
+  const totalH = State.tracks.reduce((acc, t) => acc + (t.type === 'video' ? sz.vid : sz.tr), 28);
   lanesWrap.style.width = totalW + 'px';
+  lanesWrap.style.height = totalH + 'px';
   lanesWrap.appendChild(ph);
 
   State.tracks.forEach(tr => {
     const col = TRACK_COLORS[tr.type] || '#475569';
     const hdr = document.createElement('div');
-    hdr.className = 'track-header';
+    hdr.className = 'track-header' + (tr.type === 'video' ? ' video-hdr' : '');
+    hdr.style.borderLeft = '4px solid ' + col;
     hdr.innerHTML = `
       <div class="track-header-top">
         <span class="track-badge" style="background:${col}33;color:${col};border:1px solid ${col}66;">${tr.type.slice(0,3)}</span>
         <span class="track-name" title="Click to rename">${escHtml(tr.name)}</span>
+        <button data-act="add-here" class="track-add-btn" title="Add Video, Photo, FX, Text, Audio or Animation to this track">+</button>
       </div>
       <div class="track-controls">
         <button data-act="hide" class="${tr.hidden ? 'active' : ''}" title="Hide Track">${tr.hidden ? '🙈' : '👁'}</button>
@@ -3171,6 +3627,10 @@ function renderTimeline() {
         { label: 'Cancel', onClick: closeDialog },
         { label: 'Rename', cls: 'primary', onClick: () => { tr.name = $('renameTrInp').value.trim() || tr.name; closeDialog(); renderTimeline(); } }
       ]);
+    });
+    hdr.querySelector('[data-act="add-here"]').addEventListener('click', e => {
+      e.stopPropagation();
+      openTrackAddPicker(tr);
     });
     hdr.querySelector('[data-act="hide"]').addEventListener('click', () => { tr.hidden = !tr.hidden; renderTimeline(); renderFrame(); });
     hdr.querySelector('[data-act="lock"]').addEventListener('click', () => { tr.locked = !tr.locked; renderTimeline(); });
@@ -3188,7 +3648,7 @@ function renderTimeline() {
 
     // Track lane
     const lane = document.createElement('div');
-    lane.className = 'track-lane' + (tr.locked ? ' locked' : '') + (tr.hidden ? ' hidden-track' : '');
+    lane.className = 'track-lane' + (tr.type === 'video' ? ' video-lane' : '') + (tr.locked ? ' locked' : '') + (tr.hidden ? ' hidden-track' : '');
     lane.dataset.trackId = tr.id;
     lane.style.width = totalW + 'px';
 
@@ -3199,6 +3659,50 @@ function renderTimeline() {
       el.style.width = Math.max(18, clip.duration * State.zoom) + 'px';
       el.style.background = `linear-gradient(180deg, ${col}dd, ${col}99)`;
       el.innerHTML = `<div class="clip-handle left"></div><span class="clip-label">${escHtml(clip.name)}</span><div class="clip-handle right"></div>`;
+
+      // Render Expanded Second-by-Second Scene Filmstrip inside Video, Image & Background clips
+      if (clip.kind === 'video' || clip.kind === 'image' || clip.kind === 'bg') {
+        const clipPx = Math.max(48, clip.duration * State.zoom);
+        const tileW = Math.max(44, Math.min(76, State.zoom));
+        const tileCount = Math.max(1, Math.min(36, Math.ceil(clipPx / tileW)));
+        const fsWrap = document.createElement('div');
+        fsWrap.className = 'clip-filmstrip';
+        const media = (clip.kind === 'video' || clip.kind === 'image') ? State.mediaPool.find(m => m.id === clip.mediaId) : null;
+        const trimOff = clip.trimStart || 0;
+        let hasVisual = false;
+
+        for (let ti = 0; ti < tileCount; ti++) {
+          const secInClip = (ti / tileCount) * clip.duration;
+          const srcSec = Number((trimOff + secInClip).toFixed(1));
+          const tile = document.createElement('div');
+          tile.className = 'fs-tile';
+          tile.style.width = (clipPx / tileCount) + 'px';
+
+          if (clip.kind === 'video' && media && media.filmstrip && media.filmstrip.length) {
+            hasVisual = true;
+            let best = media.filmstrip[0];
+            for (const f of media.filmstrip) {
+              if (Math.abs(f.time - srcSec) < Math.abs(best.time - srcSec)) best = f;
+            }
+            tile.innerHTML = `<img src="${best.src}" alt=""><span class="fs-sec">${srcSec}s</span>`;
+          } else if (clip.kind === 'image' && media && media.url) {
+            hasVisual = true;
+            tile.innerHTML = `<img src="${media.url}" alt=""><span class="fs-sec">${secInClip.toFixed(0)}s</span>`;
+          } else if (clip.kind === 'bg') {
+            hasVisual = true;
+            const bc = document.createElement('canvas'); bc.width = 64; bc.height = 38;
+            drawProceduralBackground(bc.getContext('2d'), clip.bgId, 64, 38, secInClip);
+            tile.appendChild(bc);
+            const sp = document.createElement('span'); sp.className = 'fs-sec'; sp.textContent = secInClip.toFixed(0) + 's';
+            tile.appendChild(sp);
+          }
+          fsWrap.appendChild(tile);
+        }
+        if (hasVisual) {
+          el.classList.add('has-filmstrip');
+          el.appendChild(fsWrap);
+        }
+      }
 
       // Draw waveform for audio clips
       if (clip.waveform && clip.waveform.length) {
@@ -3264,6 +3768,8 @@ function renderTimeline() {
           }
           el.style.left = (clip.start * State.zoom) + 'px';
           el.style.width = Math.max(18, clip.duration * State.zoom) + 'px';
+          const sr = $('clipSecReadout');
+          if (sr) sr.textContent = `${clip.start.toFixed(1)}s–${(clip.start+clip.duration).toFixed(1)}s (${clip.duration.toFixed(1)}s)`;
           renderFrame();
         };
         const onUp = () => {
@@ -3277,14 +3783,70 @@ function renderTimeline() {
 
       lane.appendChild(el);
     });
+    // Render inline '+' buttons BETWEEN clips (split/cut joints) AND right AFTER the last clip on every track!
+    const trClips = State.clips.filter(c => c.trackId === tr.id).sort((a, b) => a.start - b.start);
+    let lastEnd = 0;
+    trClips.forEach((c, idx) => {
+      const cEnd = c.start + c.duration;
+      if (cEnd > lastEnd) lastEnd = cEnd;
+      if (idx < trClips.length - 1) {
+        const nextC = trClips[idx + 1];
+        const jointT = Number(((cEnd + nextC.start) / 2).toFixed(2));
+        const bBtn = document.createElement('button');
+        bBtn.className = 'lane-plus-btn between';
+        bBtn.textContent = '+';
+        bBtn.style.left = (jointT * State.zoom) + 'px';
+        bBtn.title = `Insert item at ${jointT}s on ${tr.name}`;
+        bBtn.addEventListener('click', ev => {
+          ev.stopPropagation();
+          openTrackAddPicker(tr, jointT);
+        });
+        lane.appendChild(bBtn);
+      }
+    });
+    // End-of-track '+' button right behind the last item so you can always see the end & append
+    const endBtn = document.createElement('button');
+    endBtn.className = 'lane-plus-btn';
+    endBtn.textContent = '+';
+    endBtn.style.left = Math.max(8, lastEnd * State.zoom + 10) + 'px';
+    endBtn.title = `Add item at end of ${tr.name} (${lastEnd.toFixed(1)}s)`;
+    endBtn.addEventListener('click', ev => {
+      ev.stopPropagation();
+      openTrackAddPicker(tr, Number(lastEnd.toFixed(2)));
+    });
+    lane.appendChild(endBtn);
+
+    // Tap empty spot on any track lane -> move playhead there & open '+' insert at that exact second!
+    lane.addEventListener('click', e => {
+      if (e.target !== lane) return;
+      const rect = lane.getBoundingClientRect();
+      const t = Number(Math.max(0, (e.clientX - rect.left) / State.zoom).toFixed(2));
+      State.currentTime = t;
+      renderFrame();
+      openTrackAddPicker(tr, t);
+    });
     lanesWrap.appendChild(lane);
   });
+  const addMoreRow = document.createElement('div');
+  addMoreRow.style.cssText = 'padding:5px 4px;text-align:center;';
+  addMoreRow.innerHTML = '<button style="width:100%;font-size:10px;padding:3px 4px;background:var(--bg-2);border-style:dashed;color:var(--cyan);">+ New Track</button>';
+  addMoreRow.querySelector('button').addEventListener('click', () => $('newTrackModal').classList.add('open'));
+  headersEl.appendChild(addMoreRow);
   updatePlayheadUI();
 }
 
 // Sync vertical scroll between track headers and lanes
 $('timelineScroll').addEventListener('scroll', () => {
   $('trackHeadersList').scrollTop = $('timelineScroll').scrollTop;
+});
+$('trackHeadersList').addEventListener('scroll', () => {
+  $('timelineScroll').scrollTop = $('trackHeadersList').scrollTop;
+});
+$('btnExpandTimeline')?.addEventListener('click', e => {
+  const on = $('timelineSection').classList.toggle('tl-expanded');
+  e.currentTarget.classList.toggle('active', on);
+  e.currentTarget.textContent = on ? '⇕ Normal' : '⇕ Tall';
+  renderTimeline();
 });
 
 // Scrubbing on ruler
@@ -3382,6 +3944,36 @@ function deleteSelectedClips() {
 ============================================================================ */
 const MAX_IMPORT_BYTES = 500 * 1024 * 1024; // 500MB safe browser guard
 
+async function generateVideoFilmstrip(mediaItem) {
+  try {
+    const v = document.createElement('video');
+    v.src = mediaItem.url; v.muted = true; v.playsInline = true; v.preload = 'auto';
+    await new Promise((res, rej) => { v.onloadedmetadata = res; v.onerror = rej; setTimeout(res, 2500); });
+    const dur = Math.max(1, v.duration || mediaItem.duration || 5);
+    const maxFrames = window.innerWidth <= 820 ? 18 : 28;
+    const step = dur <= maxFrames ? 1 : (dur / maxFrames);
+    const tc = document.createElement('canvas');
+    tc.width = 96; tc.height = 54;
+    const tctx = tc.getContext('2d');
+    const strip = [];
+    for (let sec = 0; sec < dur && strip.length < maxFrames; sec += step) {
+      await new Promise(res => {
+        const done = () => { v.removeEventListener('seeked', done); res(); };
+        v.addEventListener('seeked', done, { once: true });
+        try { v.currentTime = Math.min(dur - 0.05, sec); } catch (e) { res(); }
+        setTimeout(res, 260);
+      });
+      try {
+        tctx.drawImage(v, 0, 0, 96, 54);
+        strip.push({ time: Number(sec.toFixed(1)), src: tc.toDataURL('image/jpeg', 0.55) });
+      } catch (e) {}
+    }
+    mediaItem.filmstrip = strip;
+    v.src = '';
+    renderTimeline();
+  } catch (e) {}
+}
+
 async function hydrateMediaFromBlob(id, name, type, blob, meta = {}) {
   const url = createTrackedURL(blob);
   if (type === 'image') {
@@ -3392,7 +3984,9 @@ async function hydrateMediaFromBlob(id, name, type, blob, meta = {}) {
     const vid = document.createElement('video');
     vid.src = url; vid.muted = true; vid.playsInline = true; vid.preload = 'auto';
     await new Promise((res, rej) => { vid.onloadedmetadata = res; vid.onerror = rej; });
-    return { id, name, type: 'video', url, blob, el: vid, duration: Math.max(1, vid.duration || meta.duration || 5), width: vid.videoWidth || 1280, height: vid.videoHeight || 720, missing: false };
+    const item = { id, name, type: 'video', url, blob, el: vid, duration: Math.max(1, vid.duration || meta.duration || 5), width: vid.videoWidth || 1280, height: vid.videoHeight || 720, filmstrip: [], missing: false };
+    generateVideoFilmstrip(item);
+    return item;
   } else if (type === 'audio') {
     const ctx = ensureAudioCtx();
     const arrBuf = await blob.arrayBuffer();
@@ -3486,6 +4080,7 @@ const MODULES = [
   { id: 'camera', label: 'Camera', icon: '🎥' },
   { id: 'color', label: 'Color', icon: '🎨' },
   { id: 'ai', label: 'AI Studio', icon: '🤖' },
+  { id: 'converter', label: 'HD / MP3', icon: '⚡' },
   { id: 'projects', label: 'Projects', icon: '💼' }
 ];
 
@@ -3542,10 +4137,10 @@ function renderLeftDrawer() {
     `;
     const dz = $('mediaDropzone'), inp = $('mediaFileInp');
     dz.addEventListener('click', () => inp.click());
-    inp.addEventListener('change', e => importFiles(e.target.files));
+    inp.addEventListener('change', e => handleDirectTrackImport(e.target.files));
     dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
     dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
-    dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('dragover'); importFiles(e.dataTransfer.files); });
+    dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('dragover'); handleDirectTrackImport(e.dataTransfer.files); });
 
     const grid = $('mediaGrid');
     if (!State.mediaPool.length) {
@@ -3749,6 +4344,22 @@ function renderLeftDrawer() {
         </div>
       </div>
       <div class="prop-group">
+        <div class="prop-title">🎭 Real-Time Voice Changer & Auto-Silence Cut</div>
+        <div class="prop-row"><label>Voice FX</label>
+          <select id="audVoiceChanger">
+            <option value="normal" ${State.voiceChanger==='normal'?'selected':''}>Normal Voice</option>
+            <option value="god" ${State.voiceChanger==='god'?'selected':''}>🕉 Mythology God (Deep Echo)</option>
+            <option value="demon" ${State.voiceChanger==='demon'?'selected':''}>👻 Horror Demon (Dark Pitch)</option>
+            <option value="robot" ${State.voiceChanger==='robot'?'selected':''}>🤖 Sci-Fi Robot (Metallic)</option>
+            <option value="radio" ${State.voiceChanger==='radio'?'selected':''}>📻 Walkie-Talkie Radio</option>
+            <option value="chipmunk" ${State.voiceChanger==='chipmunk'?'selected':''}>🐿 Cartoon / High Pitch</option>
+          </select>
+        </div>
+        <button id="btnAutoRemoveSilence" class="primary" style="width:100%;">✂ Auto-Remove Silence (Selected Audio)</button>
+        <div style="display:none;">
+        </div>
+      </div>
+      <div class="prop-group">
         <div class="prop-title">Dynamics & FX</div>
         <div class="prop-row"><label>Compressor / Limiter</label><input type="checkbox" id="mxComp" ${m.compressor ? 'checked' : ''}></div>
         <div class="prop-row"><label>Noise Reduction</label><input type="checkbox" id="mxNoise" ${m.noiseReduce ? 'checked' : ''}></div>
@@ -3773,6 +4384,45 @@ function renderLeftDrawer() {
     $('audPresPodcast').addEventListener('click', () => setAudPres({ bass: 4, mid: 3, treble: 2, compressor: true, noiseReduce: true, reverb: 0.05 }, 'Podcast Warm'));
     $('audPresTemple').addEventListener('click', () => setAudPres({ bass: 3, mid: 1, treble: 3, compressor: true, reverb: 0.75, delay: 0.35 }, 'Temple Hall'));
     $('audPresFlat').addEventListener('click', () => setAudPres({ bass: 0, mid: 0, treble: 0, compressor: false, noiseReduce: false, reverb: 0, delay: 0 }, 'Flat Studio'));
+    $('audVoiceChanger').addEventListener('change', e => {
+      State.voiceChanger = e.target.value;
+      const v = State.voiceChanger;
+      if (v === 'god') Object.assign(State.audioMaster, { bass: 8, mid: 2, treble: 3, reverb: 0.8 });
+      else if (v === 'demon') Object.assign(State.audioMaster, { bass: 10, mid: -4, treble: -6, reverb: 0.5 });
+      else if (v === 'robot') Object.assign(State.audioMaster, { bass: -6, mid: 9, treble: 6, delay: 0.4 });
+      else if (v === 'radio') Object.assign(State.audioMaster, { bass: -12, mid: 10, treble: -8 });
+      else if (v === 'chipmunk') Object.assign(State.audioMaster, { bass: -5, mid: 4, treble: 7 });
+      else Object.assign(State.audioMaster, { bass: 0, mid: 0, treble: 0, reverb: 0.15, delay: 0 });
+      applyMasterAudioSettings();
+      toast('Voice Changer: ' + v.toUpperCase(), 'success');
+    });
+    $('btnAutoRemoveSilence').addEventListener('click', async () => {
+      let clip = getSelectedClip();
+      if (!clip || clip.kind !== 'audio') clip = State.clips.find(c => c.kind === 'audio');
+      if (!clip) return toast('Select or add an Audio / Voiceover clip first', 'error');
+      let buf = clip.audioBufferKey ? audioBufferCache.get(clip.audioBufferKey) : null;
+      if (!buf && clip.lazySfxName) {
+        try { buf = await renderSFXBuffer(clip.lazySfxName, clip.duration || 3.0); audioBufferCache.set(clip.audioBufferKey, buf); } catch (e) {}
+      }
+      if (!buf) return toast('Audio buffer not loaded yet', 'error');
+      const data = buf.getChannelData(0), sr = buf.sampleRate, win = Math.floor(sr * 0.15);
+      let firstSound = -1, lastSound = -1;
+      for (let i = 0; i < data.length; i += win) {
+        let sum = 0;
+        for (let j = 0; j < win && i + j < data.length; j++) sum += data[i + j] * data[i + j];
+        const rms = Math.sqrt(sum / win);
+        if (rms > 0.015) {
+          if (firstSound === -1) firstSound = i / sr;
+          lastSound = Math.min(buf.duration, (i + win) / sr);
+        }
+      }
+      if (firstSound === -1 || lastSound <= firstSound + 0.15) return toast('No removable silent gaps detected in this clip');
+      pushHistory();
+      clip.trimStart = Number(firstSound.toFixed(2));
+      clip.duration = Number(Math.max(0.25, lastSound - firstSound).toFixed(2));
+      recalcDuration(); renderTimeline(); renderInspector(); renderFrame();
+      toast(`Auto-Silence Cut complete! Trimmed dead air → ${clip.duration.toFixed(2)}s`, 'success');
+    });
   } else if (mod === 'music') {
     body.innerHTML = `
       <div class="prop-group">
@@ -4482,7 +5132,180 @@ function renderLeftDrawer() {
       await testBackendConnection(false);
     });
     if (pl.aiConfig.backendProxyUrl) testBackendConnection(true);
-  } else if (mod === 'projects') {
+  } else if (mod === 'converter') {
+    body.innerHTML = `
+      <div class="prop-group">
+        <div class="prop-title"><span>🎵 Video → Audio (MP3/WAV)</span><span class="badge-synth">Lossless</span></div>
+        <div style="font-size:10.5px;color:var(--text-2);">Select any video from phone/PC to extract clean high-quality audio (saved as universal lossless .WAV; plays on all devices):</div>
+        <button id="btnPickVid2Aud" class="cyan" style="width:100%;">📂 Select Video to Extract Audio</button>
+        <input type="file" id="vid2AudInp" accept="video/*" style="display:none;">
+        <div id="vid2AudStatus" style="font-size:10.5px;color:var(--gold);"></div>
+        <div id="vid2AudOut"></div>
+      </div>
+
+      <div class="prop-group">
+        <div class="prop-title"><span>✨ Blur → Clean HD Video Converter</span><span class="badge-synth">Unsharp HD</span></div>
+        <div style="font-size:10.5px;color:var(--text-2);">Unblur soft/low-quality videos using 3×3 Unsharp Mask, Clarity Boost & High-Quality HD Upscaling (1080p / 2K / 4K):</div>
+        <button id="btnPickHdVid" class="primary" style="width:100%;">📂 Select Blurry / Low-Res Video</button>
+        <input type="file" id="hdVidInp" accept="video/*" style="display:none;">
+        <canvas id="hdPreviewCanvas" width="240" height="135" style="width:100%;height:135px;background:#000;border-radius:4px;border:1px solid var(--border);display:none;"></canvas>
+        <div class="prop-row"><label>Unblur Sharp</label><input type="range" id="hdSharp" min="0" max="150" value="85"><span class="prop-val">85%</span></div>
+        <div class="prop-row"><label>HD Clarity</label><input type="range" id="hdContrast" min="100" max="145" value="116"><span class="prop-val">116%</span></div>
+        <div class="prop-row"><label>Color Boost</label><input type="range" id="hdSat" min="100" max="150" value="118"><span class="prop-val">118%</span></div>
+        <div class="prop-row"><label>Target HD</label>
+          <select id="hdTargetRes">
+            <option value="1080" selected>1080p Full HD (1920×1080)</option>
+            <option value="1440">2K Ultra Clear (2560×1440)</option>
+            <option value="2160">4K UHD (3840×2160)</option>
+          </select>
+        </div>
+        <button id="btnStartHdConvert" class="primary" style="width:100%;" disabled>🚀 Enhance & Convert to HD</button>
+        <div id="hdConvertStatus" style="font-size:10.5px;color:var(--cyan);"></div>
+        <div id="hdConvertOut"></div>
+      </div>
+    `;
+
+    // 1. Video -> Audio Extractor
+    $('btnPickVid2Aud').addEventListener('click', () => $('vid2AudInp').click());
+    $('vid2AudInp').addEventListener('change', async e => {
+      const f = e.target.files[0]; if (!f) return;
+      $('vid2AudStatus').textContent = 'Extracting audio track from ' + f.name + '...';
+      $('vid2AudOut').innerHTML = '';
+      try {
+        const ctx = ensureAudioCtx();
+        const arrBuf = await f.arrayBuffer();
+        const audioBuf = await ctx.decodeAudioData(arrBuf);
+        const wavBlob = encodeWAV(audioBuf);
+        const url = createTrackedURL(wavBlob);
+        const outName = f.name.replace(/\.[^.]+$/, '') + '_audio.wav';
+        const key = uid('v2a');
+        audioBufferCache.set(key, audioBuf);
+        $('vid2AudStatus').textContent = `✅ Extracted ${audioBuf.duration.toFixed(1)}s clean audio (${(wavBlob.size/1048576).toFixed(2)} MB)!`;
+        $('vid2AudOut').innerHTML = `
+          <audio src="${url}" controls style="width:100%;margin:4px 0;"></audio>
+          <div class="grid-2">
+            <a href="${url}" download="${escHtml(outName)}" style="text-decoration:none;"><button class="primary" style="width:100%;">⬇ Download Audio</button></a>
+            <button id="btnV2aAddTl" class="cyan">+ Add to Timeline</button>
+          </div>
+        `;
+        $('btnV2aAddTl').addEventListener('click', () => {
+          addClipToTimeline({ name: outName, kind: 'audio', duration: audioBuf.duration, audioBufferKey: key, waveform: extractWaveform(audioBuf) }, 'audio');
+        });
+        toast('Video audio extracted cleanly!', 'success');
+      } catch (err) {
+        $('vid2AudStatus').textContent = 'Error: Browser could not decode audio from this video format (' + err.message + ')';
+        toast('Audio extraction failed for this codec', 'error');
+      }
+    });
+
+    // 2. Blur -> Clean HD Video Unblur & Upscale Converter
+    let hdVidEl = null, hdFile = null;
+    const renderHdSample = () => {
+      if (!hdVidEl || hdVidEl.readyState < 2) return;
+      const c = $('hdPreviewCanvas'); c.style.display = 'block';
+      const ctx = c.getContext('2d', { willReadFrequently: true });
+      const w = c.width, h = c.height;
+      const sharp = parseInt($('hdSharp').value) / 65;
+      const cont = parseInt($('hdContrast').value);
+      const sat = parseInt($('hdSat').value);
+      // Left half: Original Blurry | Right half: Enhanced HD Unblurred
+      ctx.filter = 'none';
+      ctx.drawImage(hdVidEl, 0, 0, w, h);
+      ctx.save();
+      ctx.beginPath(); ctx.rect(w / 2, 0, w / 2, h); ctx.clip();
+      ctx.filter = `contrast(${cont}%) saturate(${sat}%) brightness(103%)`;
+      ctx.drawImage(hdVidEl, 0, 0, w, h);
+      ctx.filter = 'none';
+      applyUnblurSharpen(ctx, w, h, sharp);
+      ctx.restore();
+      ctx.strokeStyle = '#f59e0b'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(w / 2, 0); ctx.lineTo(w / 2, h); ctx.stroke();
+      ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(4, 4, 46, 14); ctx.fillRect(w - 58, 4, 54, 14);
+      ctx.fillStyle = '#fff'; ctx.font = 'bold 9px monospace';
+      ctx.fillText('BLUR', 10, 14); ctx.fillText('CLEAN HD', w - 54, 14);
+    };
+
+    ['hdSharp','hdContrast','hdSat'].forEach(id => {
+      $(id).addEventListener('input', e => {
+        if (e.target.nextElementSibling) e.target.nextElementSibling.textContent = e.target.value + '%';
+        renderHdSample();
+      });
+    });
+
+    $('btnPickHdVid').addEventListener('click', () => $('hdVidInp').click());
+    $('hdVidInp').addEventListener('change', async e => {
+      const f = e.target.files[0]; if (!f) return;
+      hdFile = f;
+      const url = createTrackedURL(f);
+      hdVidEl = document.createElement('video');
+      hdVidEl.src = url; hdVidEl.muted = true; hdVidEl.playsInline = true;
+      await new Promise((res, rej) => { hdVidEl.onloadeddata = res; hdVidEl.onerror = rej; setTimeout(res, 2500); });
+      hdVidEl.currentTime = Math.min(1, (hdVidEl.duration || 2) * 0.25);
+      await new Promise(res => { hdVidEl.onseeked = res; setTimeout(res, 400); });
+      renderHdSample();
+      $('btnStartHdConvert').disabled = false;
+      $('hdConvertStatus').textContent = `Loaded: ${f.name} (${hdVidEl.videoWidth}×${hdVidEl.videoHeight} → Ready to Unblur & Upscale HD)`;
+    });
+
+    $('btnStartHdConvert').addEventListener('click', async () => {
+      if (!hdVidEl || !hdFile) return;
+      $('btnStartHdConvert').disabled = true;
+      exportAbort = false;
+      const targetH = parseInt($('hdTargetRes').value) || 1080;
+      const ar = (hdVidEl.videoWidth || 16) / Math.max(1, hdVidEl.videoHeight || 9);
+      const outW = Math.round(targetH * ar), outH = targetH;
+      const sharp = parseInt($('hdSharp').value) / 65;
+      const cont = parseInt($('hdContrast').value);
+      const sat = parseInt($('hdSat').value);
+
+      const hdCanvas = document.createElement('canvas');
+      hdCanvas.width = outW; hdCanvas.height = outH;
+      const hCtx = hdCanvas.getContext('2d', { willReadFrequently: true });
+      hCtx.imageSmoothingEnabled = true; hCtx.imageSmoothingQuality = 'high';
+
+      openRenderDisplay(`HD Unblur Converter (${outW}×${outH})`);
+      try {
+        const stream = hdCanvas.captureStream(30);
+        const cands = ['video/mp4;codecs=avc1,mp4a.40.2', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'];
+        const mime = cands.find(c => window.MediaRecorder && MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(c)) || '';
+        const ext = mime.startsWith('video/mp4') ? 'mp4' : 'webm';
+        const rec = new MediaRecorder(stream, mime ? { mimeType: mime, videoBitsPerSecond: 14000000 } : { videoBitsPerSecond: 14000000 });
+        const chunks = [];
+        rec.ondataavailable = ev => { if (ev.data && ev.data.size) chunks.push(ev.data); };
+        const doneP = new Promise(res => { rec.onstop = () => res(new Blob(chunks, { type: mime || 'video/webm' })); });
+
+        hdVidEl.currentTime = 0;
+        await hdVidEl.play().catch(() => {});
+        rec.start(200);
+
+        const dur = Math.max(1, hdVidEl.duration || 5);
+        while (!exportAbort && !hdVidEl.ended && hdVidEl.currentTime < dur - 0.05) {
+          hCtx.filter = `contrast(${cont}%) saturate(${sat}%) brightness(103%)`;
+          hCtx.drawImage(hdVidEl, 0, 0, outW, outH);
+          hCtx.filter = 'none';
+          if (sharp > 0.05) applyUnblurSharpen(hCtx, outW, outH, sharp);
+          const pct = clamp((hdVidEl.currentTime / dur) * 100, 0, 99);
+          updateRenderProgress(pct, `Enhancing HD ${outW}×${outH} — ${pct.toFixed(0)}%`);
+          await new Promise(r => setTimeout(r, 34));
+        }
+        hdVidEl.pause();
+        if (rec.state !== 'inactive') rec.stop();
+        const blob = await doneP;
+        try { stream.getTracks().forEach(t => t.stop()); } catch (e) {}
+        if (!exportAbort) {
+          finishExport(blob, ext, 'video');
+          $('hdConvertStatus').textContent = `✅ Enhanced to ${outW}×${outH} HD (${(blob.size/1048576).toFixed(2)} MB)!`;
+        } else {
+          closeAllRenderUI();
+        }
+      } catch (err) {
+        closeAllRenderUI();
+        toast('HD Convert error: ' + err.message, 'error');
+      } finally {
+        $('btnStartHdConvert').disabled = false;
+      }
+    });
+    } else if (mod === 'projects') {
     body.innerHTML = `
       <div class="grid-2">
         <button id="prjExportZip" class="primary">📦 Export .ZIP</button>
@@ -4599,8 +5422,35 @@ function renderLeftDrawer() {
 function renderInspector() {
   const body = $('inspectorBody');
   const clip = getSelectedClip();
+  const qbar = $('clipQuickBar');
+  if (qbar) {
+    if (clip) {
+      qbar.classList.add('show');
+      $('clipQuickName').textContent = clip.name;
+      const sr = $('clipSecReadout');
+      if (sr) sr.textContent = `${clip.start.toFixed(1)}s–${(clip.start+clip.duration).toFixed(1)}s (${clip.duration.toFixed(1)}s)`;
+    } else {
+      qbar.classList.remove('show');
+    }
+  }
   if (!clip) {
-    body.innerHTML = `<div style="color:var(--text-2);padding:12px;text-align:center;">Select any clip on the timeline to edit its Transform, Effects, Speed, Audio, or Keyframes.</div>`;
+    body.innerHTML = `
+      <div class="prop-group" style="text-align:center;gap:8px;">
+        <div style="font-size:22px;">🎬</div>
+        <div style="font-weight:700;color:var(--text-0);">Quick Add & Edit</div>
+        <div style="font-size:10.5px;color:var(--text-2);">Tap any clip on the timeline to edit it, or add something new right away:</div>
+        <button id="qaMedia" class="primary" style="width:100%;">📁 Import Video / Photo</button>
+        <button id="qaText" class="cyan" style="width:100%;">𝐓 Add Hindi / English Title</button>
+        <button id="qaVfx" style="width:100%;">✨ Add Realistic VFX</button>
+        <button id="qaMusic" style="width:100%;">🎵 Generate Background Music</button>
+        <button id="qaTpl" style="width:100%;">🚀 Open 1-Tap Templates</button>
+      </div>`;
+    const jumpMod = m => { State.activeModule = m; renderRail(); renderLeftDrawer(); $('leftDrawer').classList.add('mobile-open'); $('rightInspector').classList.remove('mobile-open'); };
+    $('qaMedia').addEventListener('click', () => jumpMod('media'));
+    $('qaText').addEventListener('click', () => jumpMod('text'));
+    $('qaVfx').addEventListener('click', () => jumpMod('vfx'));
+    $('qaMusic').addEventListener('click', () => jumpMod('music'));
+    $('qaTpl').addEventListener('click', () => $('quickStartModal').classList.add('open'));
     return;
   }
   const tab = State.activeInspectorTab;
@@ -4699,6 +5549,7 @@ function renderInspector() {
         <div class="prop-row"><label>Saturation</label><input type="range" id="fxSa" min="0" max="200" value="${fx.saturation??100}"><span class="prop-val">${fx.saturation??100}</span></div>
         <div class="prop-row"><label>Hue</label><input type="range" id="fxHu" min="-180" max="180" value="${fx.hue||0}"><span class="prop-val">${fx.hue||0}°</span></div>
         <div class="prop-row"><label>Blur</label><input type="range" id="fxBl" min="0" max="20" value="${fx.blur||0}"><span class="prop-val">${fx.blur||0}px</span></div>
+        <div class="prop-row"><label>Unblur / Sharp</label><input type="range" id="fxSharp" min="0" max="100" value="${fx.sharpen||0}"><span class="prop-val">${fx.sharpen||0}%</span></div>
         <div class="prop-row"><label>Vignette</label><input type="range" id="fxVg" min="0" max="90" value="${fx.vignette||0}"><span class="prop-val">${fx.vignette||0}%</span></div>
         <div class="prop-row"><label>Cam Shake</label><input type="range" id="fxSh" min="0" max="30" value="${fx.shake||0}"><span class="prop-val">${fx.shake||0}</span></div>
         <div class="prop-row"><label>Drop Shadow</label><input type="range" id="fxDrop" min="0" max="40" value="${fx.dropShadow||0}"><span class="prop-val">${fx.dropShadow||0}px</span></div>
@@ -4707,7 +5558,7 @@ function renderInspector() {
     `;
     const bindF = (id, key) => $(id).addEventListener('input', e => { fx[key] = parseFloat(e.target.value); e.target.nextElementSibling.textContent = e.target.value; renderFrame(); });
     bindF('fxBr','brightness'); bindF('fxCo','contrast'); bindF('fxSa','saturation'); bindF('fxHu','hue');
-    bindF('fxBl','blur'); bindF('fxVg','vignette'); bindF('fxSh','shake'); bindF('fxDrop','dropShadow');
+    bindF('fxBl','blur'); bindF('fxSharp','sharpen'); bindF('fxVg','vignette'); bindF('fxSh','shake'); bindF('fxDrop','dropShadow');
     $('fxVhs').addEventListener('change', e => { fx.vhs = e.target.checked; renderFrame(); });
   } else if (tab === 'audio') {
     body.innerHTML = `
@@ -4950,7 +5801,8 @@ async function renderMixToWav(startS, endS) {
         try { buf = await renderSFXBuffer(clip.lazySfxName, clip.duration || 3.0); audioBufferCache.set(clip.audioBufferKey, buf); } catch (e) {}
       }
       if (!buf) continue;
-      const src = off.createBufferSource(); src.buffer = buf; src.playbackRate.value = clip.speed || 1;
+      const src = off.createBufferSource(); src.buffer = buf; const vcMult = State.voiceChanger === 'demon' ? 0.72 : (State.voiceChanger === 'god' ? 0.84 : (State.voiceChanger === 'chipmunk' ? 1.42 : 1));
+      src.playbackRate.value = clamp((clip.speed || 1) * vcMult, 0.25, 4);
       const g = off.createGain();
       const baseVol = (clip.volume ?? 1) * (tr.volume ?? 1) * State.audioMaster.volume;
       const delay = Math.max(0, clip.start - startS);
@@ -5021,11 +5873,65 @@ $('btnQueueRender').addEventListener('click', () => {
   toast(`Added job #${State.renderQueue.length} to Render Queue`, 'success');
 });
 
-$('btnPauseRender').addEventListener('click', e => {
-  State.exportPaused = !State.exportPaused;
-  e.currentTarget.textContent = State.exportPaused ? '▶ Resume' : '⏸ Pause';
-  toast(State.exportPaused ? 'Render Paused' : 'Render Resumed');
+let renderMinimized = false;
+function openRenderDisplay(titleText) {
+  renderMinimized = false;
+  $('exportModal').classList.remove('open');
+  $('renderScreenTitle').textContent = titleText || 'Rendering Your Movie...';
+  $('renderScreenOverlay').classList.add('open');
+  $('bgRenderPill').classList.remove('show');
+  updateRenderProgress(0, 'Starting render engine...');
+}
+function closeAllRenderUI() {
+  renderMinimized = false;
+  $('renderScreenOverlay').classList.remove('open');
+  $('bgRenderPill').classList.remove('show');
+}
+function updateRenderProgress(pct, statusText) {
+  const clamped = clamp(Number(pct) || 0, 0, 100);
+  const pctStr = Math.round(clamped) + '%';
+  $('expProgressFill').style.width = clamped.toFixed(1) + '%';
+  if (statusText) {
+    $('expStatusText').textContent = statusText;
+    $('renderScreenSub').textContent = statusText;
+  }
+  $('renderPctBig').textContent = pctStr;
+  const circ = 326.73;
+  $('renderRingCircle').style.strokeDashoffset = (circ - (circ * clamped) / 100).toFixed(2);
+  $('bgPillPct').textContent = pctStr;
+  $('bgPillBar').style.width = clamped.toFixed(1) + '%';
+}
+
+$('btnMinimizeRender').addEventListener('click', () => {
+  renderMinimized = true;
+  $('renderScreenOverlay').classList.remove('open');
+  $('bgRenderPill').classList.add('show');
+  toast('Exporting in background — keep editing freely!', 'info');
 });
+$('bgRenderPill').addEventListener('click', () => {
+  renderMinimized = false;
+  $('bgRenderPill').classList.remove('show');
+  $('renderScreenOverlay').classList.add('open');
+});
+const toggleRenderPause = () => {
+  State.exportPaused = !State.exportPaused;
+  const lbl = State.exportPaused ? '▶ Resume' : '⏸ Pause';
+  $('btnPauseRender').textContent = lbl;
+  $('btnScreenPause').textContent = lbl;
+  toast(State.exportPaused ? 'Render Paused' : 'Render Resumed');
+};
+$('btnPauseRender').addEventListener('click', toggleRenderPause);
+$('btnScreenPause').addEventListener('click', toggleRenderPause);
+$('btnScreenCancel').addEventListener('click', () => { exportAbort = true; closeAllRenderUI(); });
+
+const returnToStudioHome = () => {
+  $('exportDoneModal').classList.remove('open');
+  $('exportModal').classList.remove('open');
+  closeAllRenderUI();
+  closeMobileSheets();
+};
+$('btnCloseDoneModal').addEventListener('click', returnToStudioHome);
+$('btnBackToHome').addEventListener('click', returnToStudioHome);
 
 $('btnStartRender').addEventListener('click', async () => {
   exportAbort = false;
@@ -5051,13 +5957,13 @@ $('btnStartRender').addEventListener('click', async () => {
   $('btnPauseRender').disabled = false;
   $('btnPauseRender').textContent = '⏸ Pause';
   $('expPreviewWrap').style.display = 'none';
-  $('expProgressFill').style.width = '0%';
+  openRenderDisplay(`Exporting ${(State.projectName || 'Movie')} (${fmt.toUpperCase()})`);
 
   try {
     if (fmt === 'wav') {
       $('expCodecInfo').textContent = 'Lossless PCM WAV';
       $('expStatusText').textContent = 'Rendering lossless WAV audio mix (with fades, speed & pan)...';
-      $('expProgressFill').style.width = '50%';
+      updateRenderProgress(50, 'Rendering lossless WAV audio mix (with fades, speed & pan)...');
       const wavBlob = await renderMixToWav(startS, endS);
       $('expProgressFill').style.width = '100%';
       finishExport(wavBlob, 'wav', 'audio');
@@ -5098,8 +6004,7 @@ $('btnStartRender').addEventListener('click', async () => {
         renderFrameAt(eCtx, gifW, gifH, curT);
         frames.push(new Uint8Array(eCtx.getImageData(0, 0, gifW, gifH).data));
         const pct = ((fi + 1) / totalFrames) * 85;
-        $('expProgressFill').style.width = pct.toFixed(1) + '%';
-        $('expStatusText').textContent = `Capturing GIF frame ${fi + 1}/${totalFrames} (${gifW}×${gifH})...`;
+        updateRenderProgress(pct, `Capturing GIF frame ${fi + 1}/${totalFrames} (${gifW}×${gifH})...`);
         await new Promise(r => setTimeout(r, 4));
       }
       if (!exportAbort && frames.length) {
@@ -5186,8 +6091,7 @@ async function recordCanvasStream(canvas, ctx, w, h, startS, endS, fps, bitrate,
     await seekActiveVideosForTime(cur);
     renderFrameAt(ctx, w, h, cur);
     const pct = clamp((elapsed / totalDur) * 100, 0, 100);
-    $('expProgressFill').style.width = pct.toFixed(1) + '%';
-    $('expStatusText').textContent = `Rendering ${w}×${h} @ ${fps}fps — ${pct.toFixed(0)}% (${formatTimecode(cur)})`;
+    updateRenderProgress(pct, `Rendering ${w}×${h} @ ${fps}fps — ${pct.toFixed(0)}% (${formatTimecode(cur)})`);
     await new Promise(r => setTimeout(r, Math.max(12, 1000 / fps)));
   }
   stopAllAudio();
@@ -5196,6 +6100,7 @@ async function recordCanvasStream(canvas, ctx, w, h, startS, endS, fps, bitrate,
   // Cleanup stream tracks to prevent memory leaks
   try { stream.getTracks().forEach(t => t.stop()); } catch (e) {}
   if (exportAbort) {
+    closeAllRenderUI();
     $('expStatusText').textContent = 'Render cancelled.';
     toast('Render cancelled');
   } else {
@@ -5205,25 +6110,35 @@ async function recordCanvasStream(canvas, ctx, w, h, startS, endS, fps, bitrate,
 }
 
 function finishExport(blob, ext, kind) {
+  updateRenderProgress(100, 'Finalizing & downloading file...');
   const url = createTrackedURL(blob);
   State.lastExportUrls.push(url);
   const fname = `${(State.projectName || 'MAHAINDUSTRIES_MOVIE').replace(/[^a-z0-9_-]/gi, '_')}.${ext}`;
-  const wrap = $('expPreviewWrap');
-  wrap.style.display = 'block';
+  const sizeMb = (blob.size / (1024 * 1024)).toFixed(2);
   const mediaHtml = kind === 'video'
-    ? `<video src="${url}" controls style="width:100%;max-height:170px;border-radius:4px;background:#000;"></video>`
+    ? `<video src="${url}" controls playsinline style="width:100%;max-height:165px;border-radius:6px;background:#000;"></video>`
     : (kind === 'image'
-      ? `<img src="${url}" alt="Exported GIF" style="max-width:100%;max-height:170px;border-radius:4px;background:#000;display:block;margin:0 auto;">`
+      ? `<img src="${url}" alt="Exported GIF" style="max-width:100%;max-height:165px;border-radius:6px;background:#000;display:block;margin:0 auto;">`
       : `<audio src="${url}" controls style="width:100%;"></audio>`);
-  wrap.innerHTML = `
-    ${mediaHtml}
-    <div style="margin-top:6px;display:flex;justify-content:space-between;align-items:center;">
-      <span style="font-size:11px;color:var(--green);">✅ Ready (${(blob.size / (1024*1024)).toFixed(2)} MB • .${ext.toUpperCase()})</span>
-      <a href="${url}" download="${fname}" style="text-decoration:none;"><button class="primary">⬇ Download ${fname}</button></a>
-    </div>
-  `;
-  $('expStatusText').textContent = `Export complete (.${ext.toUpperCase()})! Preview and download below.`;
-  toast(`Exported genuine .${ext.toUpperCase()} file!`, 'success');
+
+  // Automatically trigger browser download
+  try {
+    const dl = document.createElement('a');
+    dl.href = url; dl.download = fname;
+    document.body.appendChild(dl); dl.click(); dl.remove();
+  } catch (e) {}
+
+  setTimeout(() => {
+    closeAllRenderUI();
+    $('doneFileName').textContent = fname;
+    $('doneFileMeta').textContent = `File Downloaded! (${sizeMb} MB • .${ext.toUpperCase()})`;
+    $('donePreviewBox').innerHTML = mediaHtml;
+    const dlLink = $('doneDownloadAgainLink');
+    dlLink.href = url; dlLink.download = fname;
+    $('exportDoneModal').classList.add('open');
+  }, 350);
+
+  toast(`✅ File Downloaded: ${fname} (${sizeMb} MB)`, 'success');
 }
 
 $('btnCancelRender').addEventListener('click', () => { exportAbort = true; });
@@ -5245,13 +6160,56 @@ function startCanvasMode(mode) {
 }
 
 $('btnCanvasModeCancel').addEventListener('click', () => {
-  State.canvasMode = null; State.tempPoints = [];
+  State.canvasMode = null; State.tempPoints = []; State.tempDrawPaths = []; $('drawStrokeCol').style.display = 'none';
   $('canvasModeBanner').style.display = 'none';
   renderFrame();
 });
 
+function startDrawMode() {
+  State.canvasMode = 'draw';
+  State.tempDrawPaths = [];
+  $('canvasModeText').textContent = '✏️ Neon Draw: Draw with finger/mouse, then Finish';
+  $('drawStrokeCol').style.display = 'inline-block';
+  $('canvasModeBanner').style.display = 'flex';
+  renderFrame();
+}
+$('btnDrawMode').addEventListener('click', startDrawMode);
+$('btnCinemaBars').addEventListener('click', e => {
+  State.cinemaBars = !State.cinemaBars;
+  e.currentTarget.classList.toggle('active', State.cinemaBars);
+  if ($('setCinemaBars')) $('setCinemaBars').checked = State.cinemaBars;
+  renderFrame();
+  toast(State.cinemaBars ? '2.39:1 Hollywood Cinema Bars ON' : 'Cinema Bars OFF');
+});
+$('setCinemaBars').addEventListener('change', e => {
+  State.cinemaBars = e.target.checked;
+  $('btnCinemaBars').classList.toggle('active', State.cinemaBars);
+  renderFrame();
+});
+$('btnUploadWatermark').addEventListener('click', () => $('watermarkInp').click());
+$('watermarkInp').addEventListener('change', e => {
+  const f = e.target.files[0]; if (!f) return;
+  const img = new Image();
+  img.onload = () => { State.watermark.img = img; renderFrame(); toast('Channel Logo Watermark Applied!', 'success'); };
+  img.src = createTrackedURL(f);
+});
+$('btnClearWatermark').addEventListener('click', () => { State.watermark.img = null; renderFrame(); toast('Watermark cleared'); });
+$('setWmPos').addEventListener('change', e => { State.watermark.pos = e.target.value; renderFrame(); });
+$('setWmOp').addEventListener('input', e => { State.watermark.opacity = parseFloat(e.target.value); renderFrame(); });
+
+let isDrawingStroke = false;
 $('btnCanvasModeDone').addEventListener('click', () => {
   const clip = getSelectedClip();
+  $('drawStrokeCol').style.display = 'none';
+  if (State.canvasMode === 'draw') {
+    if (State.tempDrawPaths.length) {
+      addClipToTimeline({ name: '✏️ Neon Drawing', kind: 'drawing', drawPaths: JSON.parse(JSON.stringify(State.tempDrawPaths)), duration: 4 }, 'overlay');
+    }
+    State.canvasMode = null; State.tempDrawPaths = [];
+    $('canvasModeBanner').style.display = 'none';
+    renderFrame();
+    return;
+  }
   if (clip && State.canvasMode === 'pen_mask' && State.tempPoints.length >= 3) {
     pushHistory();
     clip.mask = 'custom';
@@ -5278,6 +6236,15 @@ $('btnCanvasModeDone').addEventListener('click', () => {
 });
 
 previewCanvas.addEventListener('pointerdown', e => {
+  if (State.canvasMode === 'draw') {
+    const rect = previewCanvas.getBoundingClientRect();
+    const nx = clamp((e.clientX - rect.left) / Math.max(1, rect.width), 0, 1);
+    const ny = clamp((e.clientY - rect.top) / Math.max(1, rect.height), 0, 1);
+    isDrawingStroke = true;
+    State.tempDrawPaths.push({ color: $('drawStrokeCol')?.value || '#facc15', width: 5, pts: [{ x: nx, y: ny }] });
+    renderFrame();
+    return;
+  }
   if (State.canvasMode) {
     const rect = previewCanvas.getBoundingClientRect();
     const nx = clamp((e.clientX - rect.left) / Math.max(1, rect.width), 0, 1);
@@ -5293,6 +6260,14 @@ previewCanvas.addEventListener('pointerdown', e => {
   dpOrigX = clip.x || 0; dpOrigY = clip.y || 0;
 });
 window.addEventListener('pointermove', e => {
+  if (isDrawingStroke && State.canvasMode === 'draw' && State.tempDrawPaths.length) {
+    const rect = previewCanvas.getBoundingClientRect();
+    const nx = clamp((e.clientX - rect.left) / Math.max(1, rect.width), 0, 1);
+    const ny = clamp((e.clientY - rect.top) / Math.max(1, rect.height), 0, 1);
+    State.tempDrawPaths[State.tempDrawPaths.length - 1].pts.push({ x: nx, y: ny });
+    renderFrame();
+    return;
+  }
   if (!dragPreview) return;
   const clip = getSelectedClip(); if (!clip) return;
   const rect = previewCanvas.getBoundingClientRect();
@@ -5302,7 +6277,7 @@ window.addEventListener('pointermove', e => {
   clip.y = Math.round(dpOrigY + (e.clientY - dpStartY) * scaleY);
   renderFrame();
 });
-window.addEventListener('pointerup', () => { if (dragPreview) { dragPreview = false; renderInspector(); } });
+window.addEventListener('pointerup', () => { isDrawingStroke = false; if (dragPreview) { dragPreview = false; renderInspector(); } });
 
 /* ============================================================================
    13. GLOBAL EVENT LISTENERS, KEYBOARD SHORTCUTS & DEMO PROJECT INIT
@@ -5436,7 +6411,76 @@ $('btnPasteClip').addEventListener('click', pasteClip);
 $('btnDeleteClip').addEventListener('click', deleteSelectedClips);
 $('btnSnapToggle').addEventListener('click', e => { State.snap = !State.snap; e.currentTarget.classList.toggle('active', State.snap); });
 $('btnAddTrack').addEventListener('click', () => addTrack($('addTrackTypeSelect').value));
-$('timelineZoom').addEventListener('input', e => { State.zoom = parseInt(e.target.value); renderTimeline(); });
+$('btnOpenNewTrackModal').addEventListener('click', () => $('newTrackModal').classList.add('open'));
+$('btnCloseNewTrack').addEventListener('click', () => $('newTrackModal').classList.remove('open'));
+document.querySelectorAll('#newTrackGrid [data-nt]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const type = btn.dataset.nt;
+    addTrack(type);
+    $('newTrackModal').classList.remove('open');
+    if (type === 'audio' || type === 'music') {
+      $('timelineScroll').scrollTop = $('timelineScroll').scrollHeight;
+    } else {
+      $('timelineScroll').scrollTop = 0;
+    }
+  });
+});
+function setTimelineZoom(val) {
+  State.zoom = clamp(Math.round(val), 8, 300);
+  $('timelineZoom').value = State.zoom;
+  renderTimeline();
+}
+$('timelineZoom').addEventListener('input', e => setTimelineZoom(parseInt(e.target.value)));
+$('btnZoomOut').addEventListener('click', () => setTimelineZoom(State.zoom * 0.72));
+$('btnZoomIn').addEventListener('click', () => setTimelineZoom(State.zoom * 1.35));
+$('btnZoomFit').addEventListener('click', () => {
+  const avail = Math.max(180, $('timelineScroll').clientWidth - 60);
+  setTimelineZoom(avail / Math.max(4, State.duration));
+  $('timelineScroll').scrollLeft = 0;
+  toast('Timeline fitted to full duration (' + State.duration + 's)');
+});
+
+// Track Height Switcher: S (Compact) -> M (Medium) -> L (Large Filmstrip)
+const TRACK_SIZES = [
+  { key: 'S', tr: 34, vid: 42 },
+  { key: 'M', tr: 44, vid: 56 },
+  { key: 'L', tr: 58, vid: 74 }
+];
+let trackSizeIdx = 1;
+State.trackSizeHeights = TRACK_SIZES[1];
+$('btnTrackSize').addEventListener('click', () => {
+  trackSizeIdx = (trackSizeIdx + 1) % TRACK_SIZES.length;
+  const cfg = TRACK_SIZES[trackSizeIdx];
+  State.trackSizeHeights = cfg;
+  document.documentElement.style.setProperty('--tr-h', cfg.tr + 'px');
+  document.documentElement.style.setProperty('--vid-h', cfg.vid + 'px');
+  $('btnTrackSize').textContent = '↕ Trk:' + cfg.key;
+  renderTimeline();
+  toast('Track Size: ' + (cfg.key === 'S' ? 'Small (Compact)' : (cfg.key === 'M' ? 'Medium' : 'Large Filmstrip')));
+});
+
+// Smooth Mouse & Touch Drag Resizer for Timeline Section Height
+(() => {
+  const bar = $('timelineResizer'), sec = $('timelineSection');
+  if (!bar || !sec) return;
+  bar.addEventListener('pointerdown', e => {
+    e.preventDefault();
+    try { bar.setPointerCapture(e.pointerId); } catch (err) {}
+    const startY = e.clientY, startH = sec.getBoundingClientRect().height;
+    const onMove = ev => {
+      const nextH = clamp(startH + (startY - ev.clientY), 140, Math.round(window.innerHeight * 0.74));
+      sec.style.height = nextH + 'px';
+      sec.style.maxHeight = 'none';
+    };
+    const onUp = () => {
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+      renderTimeline();
+    };
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+  });
+})();
 
 $('btnShortcuts').addEventListener('click', () => {
   showDialog('⌨ Keyboard Shortcuts', `
@@ -5752,6 +6796,65 @@ $('btnMergeScenes').addEventListener('click', () => {
 });
 
 // Download Offline Standalone HTML App
+// Real Native PWA Install (Android Home Screen & Windows Desktop App)
+let deferredInstallPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  const b = $('btnInstallPwaApp');
+  if (b) b.textContent = '📲 Install Now (Ready!)';
+});
+if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  navigator.serviceWorker.register('./sw.js').catch(() => {});
+}
+$('btnInstallPwaApp').addEventListener('click', async () => {
+  if (deferredInstallPrompt) {
+    deferredInstallPrompt.prompt();
+    const res = await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    toast(res.outcome === 'accepted' ? 'App Installed to your device!' : 'Install dismissed', res.outcome === 'accepted' ? 'success' : 'info');
+  } else {
+    showDialog('📲 Install as Android / Windows App', `
+      <div style="font-size:11.5px;line-height:1.6;">
+        <b>Android Chrome:</b> Open your HTTPS link (<code>moviestudio.onrender.com</code>) → tap top-right <b>⋮ Menu</b> → <b>Install App / Add to Home Screen</b>.<br><br>
+        <b>Windows Chrome / Edge:</b> Click the <b>Install (⊕)</b> icon in the address bar to install as a standalone Desktop App with Start Menu shortcut!<br><br>
+        <i>Note: Browsers cannot compile signed binary .APK or .EXE files directly without Android SDK / Electron; click <b>📦 APK / EXE Builder ZIP</b> to download the real ready-to-compile Capacitor (APK) + Electron (EXE) project!</i>
+      </div>
+    `);
+  }
+});
+
+// Real Ready-to-Compile Android APK (Capacitor) & Windows EXE (Electron) Builder Kit Generator
+$('btnBuildApkExeKit').addEventListener('click', () => {
+  try {
+    const enc = new TextEncoder();
+    const fullHtml = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+    const electronPkg = JSON.stringify({
+      name: 'mahaindustries-movie-studio',
+      version: '4.0.0',
+      main: 'electron-main.js',
+      scripts: { start: 'electron .', 'build:exe': 'electron-builder --win nsis' },
+      build: { appId: 'com.mahaindustries.moviestudio', productName: 'MAHAINDUSTRIES MOVIE STUDIO', win: { target: 'nsis' } },
+      devDependencies: { electron: '^31.0.0', 'electron-builder': '^24.13.3' }
+    }, null, 2);
+    const electronMain = `const { app, BrowserWindow } = require('electron');\napp.whenReady().then(() => {\n  const win = new BrowserWindow({ width: 1366, height: 840, backgroundColor: '#080a0e', autoHideMenuBar: true });\n  win.loadFile('www/index.html');\n});\napp.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit(); });\n`;
+    const capCfg = JSON.stringify({ appId: 'com.mahaindustries.moviestudio', appName: 'MAHAINDUSTRIES MOVIE STUDIO', webDir: 'www' }, null, 2);
+    const readme = `MAHAINDUSTRIES MOVIE STUDIO V4 — REAL ANDROID .APK & WINDOWS .EXE BUILDER\n\n1) BUILD REAL WINDOWS .EXE:\n   npm install\n   npm run build:exe\n   (Output .exe installer will appear in dist/)\n\n2) BUILD REAL ANDROID .APK (Capacitor + Android Studio):\n   npm install @capacitor/core @capacitor/cli @capacitor/android\n   npx cap add android\n   npx cap sync android\n   npx cap open android  -> Build > Build APK(s)\n`;
+    const zipBlob = buildZipBlob([
+      { name: 'www/index.html', data: enc.encode(fullHtml) },
+      { name: 'package.json', data: enc.encode(electronPkg) },
+      { name: 'electron-main.js', data: enc.encode(electronMain) },
+      { name: 'capacitor.config.json', data: enc.encode(capCfg) },
+      { name: 'BUILD_APK_EXE.txt', data: enc.encode(readme) }
+    ]);
+    const u = createTrackedURL(zipBlob);
+    const a = document.createElement('a'); a.href = u;
+    a.download = 'MAHAINDUSTRIES_APK_EXE_BUILDER.zip'; a.click();
+    setTimeout(() => revokeTrackedURL(u), 8000);
+    toast('Downloaded Real Android APK + Windows EXE Builder Kit!', 'success');
+  } catch (e) { toast('Builder kit error: ' + e.message, 'error'); }
+});
+
 $('btnDownloadOfflineApp').addEventListener('click', () => {
   try {
     const html = '<!DOCTYPE html>\\n' + document.documentElement.outerHTML;
@@ -5887,6 +6990,208 @@ window.addEventListener('pagehide', () => {
   stopAllAudio();
   TrackedURLs.forEach(u => { try { URL.revokeObjectURL(u); } catch (e) {} });
   TrackedURLs.clear();
+});
+
+
+// Easy / Pro Workspace Toggle (makes Android & beginners super comfortable)
+State.easyMode = false;
+State.uiLang = 'en';
+$('btnEasyMode').addEventListener('click', () => {
+  State.easyMode = !State.easyMode;
+  document.body.classList.toggle('easy-mode', State.easyMode);
+  $('easyModeLbl').textContent = State.easyMode ? 'Easy' : 'Pro';
+  $('btnEasyMode').classList.toggle('active', State.easyMode);
+  toast(State.easyMode ? 'Easy Mode ON — Clean simple controls!' : 'Pro Mode ON — All Hollywood tools visible!');
+});
+
+// Hindi / English Quick UI Toggle
+$('btnLangToggle').addEventListener('click', () => {
+  State.uiLang = State.uiLang === 'en' ? 'hi' : 'en';
+  const hi = State.uiLang === 'hi';
+  $('btnLangToggle').textContent = hi ? '🌐 EN' : '🌐 हिं';
+  $('btnPlayPause').textContent = State.playing ? (hi ? '⏸ रोकें' : '⏸ Pause') : (hi ? '▶ चलाएं' : '▶ Play');
+  $('btnExportModal').querySelector('span').textContent = hi ? 'एक्सपोर्ट' : 'Export';
+  $('btnSaveProject').querySelector('span').textContent = hi ? 'सेव' : 'Save';
+  $('btnQuickStart').querySelector('span').textContent = hi ? 'टेम्पलेट्स' : 'Templates';
+  toast(hi ? 'हिंदी इंटरफ़ेस सक्रिय' : 'English Interface Active');
+});
+
+// Tap empty Preview area on Android to close open Bottom Sheet smoothly
+$('previewWrap').addEventListener('click', e => {
+  if (window.innerWidth <= 820 && e.target === $('previewWrap')) closeMobileSheets();
+});
+
+// 1-Tap Quick Start Movie & Reels Templates
+$('btnQuickStart').addEventListener('click', () => $('quickStartModal').classList.add('open'));
+$('btnCloseQuickStart').addEventListener('click', () => $('quickStartModal').classList.remove('open'));
+
+async function applyQuickTemplate(tpl) {
+  pushHistory();
+  pausePlayback();
+  $('quickStartModal').classList.remove('open');
+  closeMobileSheets();
+  State.tracks = [
+    { id: uid('tr'), type: 'vfx', name: 'VFX 1', hidden: false, locked: false, muted: false, volume: 1 },
+    { id: uid('tr'), type: 'text', name: 'TEXT 1', hidden: false, locked: false, muted: false, volume: 1 },
+    { id: uid('tr'), type: 'video', name: 'VIDEO 1', hidden: false, locked: false, muted: false, volume: 1 },
+    { id: uid('tr'), type: 'audio', name: 'AUDIO 1', hidden: false, locked: false, muted: false, volume: 1 }
+  ];
+  const [trVfx, trTxt, trVid, trAud] = State.tracks;
+  State.clips = [];
+  State.currentTime = 1.4;
+
+  if (tpl === 'blank') {
+    State.currentTime = 0; State.selectedClipIds = [];
+    recalcDuration(); renderTimeline(); renderInspector(); renderFrame();
+    State.activeModule = 'media'; renderRail(); renderLeftDrawer();
+    $('leftDrawer').classList.add('mobile-open');
+    toast('Blank project ready — Import your video/photos!', 'success');
+    return;
+  }
+
+  const presets = {
+    mythology: { aspect: '16:9', bg: 'myth_temple', vfx: 'divine_rays', title: 'रामायण • महाकाव्य', sfx: 'Shankh', col1: '#fef08a', col2: '#f59e0b', karaoke: false },
+    reels: { aspect: '9:16', bg: 'cine_neon', vfx: 'sparks', title: 'VIRAL REEL STUDIO READY', sfx: 'Trailer Hit', col1: '#ffffff', col2: '#facc15', karaoke: true },
+    scifi: { aspect: '16:9', bg: 'scifi_galaxy', vfx: 'portal', title: 'GALAXY PROTOCOL', sfx: 'Warp', col1: '#67e8f9', col2: '#06b6d4', karaoke: false },
+    horror: { aspect: '16:9', bg: 'horror_house', vfx: 'ghost_fx', title: 'रात का साया', sfx: 'Horror Stinger', col1: '#fca5a5', col2: '#dc2626', karaoke: false },
+    action: { aspect: '16:9', bg: 'myth_battlefield', vfx: 'bomb', title: 'FINAL STRIKE', sfx: 'Explosion', col1: '#fef08a', col2: '#ef4444', karaoke: false }
+  };
+  const cfg = presets[tpl] || presets.mythology;
+  State.aspect = cfg.aspect;
+  State.safeGuides = (tpl === 'reels');
+  $('btnSafeGuides')?.classList.toggle('active', State.safeGuides);
+  updatePreviewDimensions();
+
+  State.clips.push(
+    { id: uid('clip'), trackId: trVid.id, name: 'Scene BG', kind: 'bg', bgId: cfg.bg, start: 0, duration: 7, x: 0, y: 0, scale: 1, rotation: 0, opacity: 1, blendMode: 'source-over', mask: 'none', transitionIn: 'fade', transitionDur: 0.6, animPreset: 'ken_burns', fx: {}, keyframes: [] },
+    { id: uid('clip'), trackId: trVfx.id, name: 'VFX: ' + cfg.vfx, kind: 'vfx', vfxId: cfg.vfx, start: 0, duration: 7, intensity: 1, x: 0, y: 0, scale: 1, rotation: 0, opacity: 0.85, blendMode: 'screen', mask: 'none', transitionIn: 'fade', transitionDur: 0.5, animPreset: 'none', fx: {}, keyframes: [] },
+    { id: uid('clip'), trackId: trTxt.id, name: cfg.title, kind: 'text', text: cfg.title, textStyle: { size: cfg.aspect === '9:16' ? 42 : 58, color: cfg.col1, color2: cfg.col2, gradient: !cfg.karaoke, style3d: !cfg.karaoke, karaoke: cfg.karaoke, karaokeColor: '#facc15', glow: 18, glowColor: cfg.col2, outlineWidth: 3, outlineColor: '#000' }, start: 0.4, duration: 6.2, x: 0, y: 0, scale: 1, rotation: 0, opacity: 1, blendMode: 'source-over', mask: 'none', transitionIn: 'zoom_in', transitionDur: 0.6, animPreset: 'none', fx: {}, keyframes: [] }
+  );
+  try {
+    const buf = await renderSFXBuffer(cfg.sfx, 2.5);
+    const key = 'sfx_' + cfg.sfx + '_2.5'; audioBufferCache.set(key, buf);
+    State.clips.push({ id: uid('clip'), trackId: trAud.id, name: 'SFX: ' + cfg.sfx, kind: 'audio', start: 0.3, duration: 2.5, volume: 0.85, speed: 1, audioBufferKey: key, waveform: extractWaveform(buf), keyframes: [] });
+  } catch (e) {}
+
+  State.selectedClipIds = [State.clips[2].id];
+  recalcDuration(); renderTimeline(); renderInspector(); renderFrame();
+  toast(`Loaded "${tpl.toUpperCase()}" template — Press Play!`, 'success');
+}
+
+document.querySelectorAll('#quickStartGrid [data-qs]').forEach(btn => {
+  btn.addEventListener('click', () => applyQuickTemplate(btn.dataset.qs));
+});
+
+
+// Every-Track '+' Quick-Add Picker & One-Tap Clip Action Bar (Split / Trim L / Trim R / Dup / Remove)
+State.targetAddTrackId = null;
+
+function openTrackAddPicker(tr, customTime = null) {
+  State.targetAddTrackId = tr.id;
+  const insertAt = customTime !== null ? Number(customTime) : Number(State.currentTime.toFixed(2));
+  State.targetAddTime = insertAt;
+  State.currentTime = insertAt;
+  renderFrame();
+  $('trackAddTitle').textContent = `➕ Add to "${tr.name}" @ ${insertAt.toFixed(1)}s`;
+  $('trackAddSub').textContent = `Selected item will be added directly onto "${tr.name}" at ${insertAt.toFixed(2)}s`;
+  $('trackAddModal').classList.add('open');
+}
+$('btnCloseTrackAdd').addEventListener('click', () => {
+  $('trackAddModal').classList.remove('open');
+  State.targetAddTrackId = null;
+});
+
+document.querySelectorAll('#trackAddGrid [data-tadd]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const kind = btn.dataset.tadd;
+    $('trackAddModal').classList.remove('open');
+    if (kind === 'video') {
+      $('directTrackVideoInp').value = '';
+      $('directTrackVideoInp').click();
+    } else if (kind === 'audio_file') {
+      $('directTrackAudioInp').value = '';
+      $('directTrackAudioInp').click();
+    } else if (kind === 'censor') {
+      addClipToTimeline({ name: '🕵️ Blur Censor Box', kind: 'censor', duration: 4 }, 'overlay');
+    } else if (kind === 'draw') {
+      startDrawMode();
+    } else {
+      State.activeModule = kind;
+      renderRail();
+      renderLeftDrawer();
+      $('leftDrawer').classList.add('mobile-open');
+      toast(`Pick any ${kind.toUpperCase()} item to add to this track!`, 'info');
+    }
+  });
+});
+
+async function handleDirectTrackImport(files) {
+  const savedTarget = State.targetAddTrackId;
+  let insertAt = (State.targetAddTime !== null && State.targetAddTime !== undefined) ? State.targetAddTime : State.currentTime;
+  const beforeLen = State.mediaPool.length;
+  await importFiles(files);
+  const addedItems = State.mediaPool.slice(beforeLen);
+  addedItems.forEach(item => {
+    State.targetAddTrackId = savedTarget;
+    State.targetAddTime = insertAt;
+    if (item.type === 'audio') {
+      addClipToTimeline({ name: item.name, kind: 'audio', mediaId: item.id, start: Number(insertAt.toFixed(2)), duration: item.duration, audioBufferKey: item.audioBufferKey, waveform: item.waveform }, 'audio');
+    } else {
+      if (item.type === 'video' && State.zoom < 85) { State.zoom = 90; $('timelineZoom').value = 90; }
+      addClipToTimeline({ name: item.name, kind: item.type, mediaId: item.id, start: Number(insertAt.toFixed(2)), duration: item.duration }, 'video');
+    }
+    insertAt += item.duration;
+  });
+  closeMobileSheets();
+}
+$('directTrackVideoInp').addEventListener('change', e => { if (e.target.files.length) handleDirectTrackImport(e.target.files); });
+$('directTrackAudioInp').addEventListener('change', e => { if (e.target.files.length) handleDirectTrackImport(e.target.files); });
+
+// Clip Quick Action Bar Handlers
+$('cqSplit').addEventListener('click', splitSelectedClip);
+$('cqStepMinus').addEventListener('click', () => {
+  const clip = getSelectedClip(); if (!clip) return;
+  pushHistory();
+  clip.duration = Number(Math.max(0.2, clip.duration - 0.5).toFixed(2));
+  recalcDuration(); renderTimeline(); renderInspector(); renderFrame();
+  toast(`Trimmed -0.5s → Duration: ${clip.duration.toFixed(1)}s`);
+});
+$('cqStepPlus').addEventListener('click', () => {
+  const clip = getSelectedClip(); if (!clip) return;
+  pushHistory();
+  clip.duration = Number((clip.duration + 0.5).toFixed(2));
+  recalcDuration(); renderTimeline(); renderInspector(); renderFrame();
+  toast(`Extended +0.5s → Duration: ${clip.duration.toFixed(1)}s`);
+});
+$('cqDup').addEventListener('click', duplicateSelectedClip);
+$('cqRemove').addEventListener('click', deleteSelectedClips);
+$('cqEdit').addEventListener('click', () => {
+  closeMobileSheets();
+  $('rightInspector').classList.add('mobile-open');
+  renderInspector();
+});
+$('cqTrimL').addEventListener('click', () => {
+  const clip = getSelectedClip();
+  if (!clip) return;
+  const t = State.currentTime;
+  if (t <= clip.start || t >= clip.start + clip.duration - 0.15) return toast('Move playhead inside the clip to trim its start', 'error');
+  pushHistory();
+  const cut = Number((t - clip.start).toFixed(2));
+  clip.start = Number(t.toFixed(2));
+  clip.duration = Number(Math.max(0.2, clip.duration - cut).toFixed(2));
+  clip.trimStart = (clip.trimStart || 0) + cut;
+  recalcDuration(); renderTimeline(); renderInspector(); renderFrame();
+  toast('Trimmed clip start to playhead!', 'success');
+});
+$('cqTrimR').addEventListener('click', () => {
+  const clip = getSelectedClip();
+  if (!clip) return;
+  const t = State.currentTime;
+  if (t <= clip.start + 0.15 || t >= clip.start + clip.duration) return toast('Move playhead inside the clip to trim its end', 'error');
+  pushHistory();
+  clip.duration = Number(Math.max(0.2, t - clip.start).toFixed(2));
+  recalcDuration(); renderTimeline(); renderInspector(); renderFrame();
+  toast('Trimmed clip end to playhead!', 'success');
 });
 
 
