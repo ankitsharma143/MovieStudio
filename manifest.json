@@ -1,0 +1,9 @@
+{
+  "name": "MAHAINDUSTRIES MOVIE STUDIO V4",
+  "short_name": "MahaStudio",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#080a0e",
+  "theme_color": "#080a0e",
+  "orientation": "any"
+}
