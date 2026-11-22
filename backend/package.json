@@ -1,0 +1,14 @@
+{
+  "name": "mahaindustries-movie-studio-v4-backend",
+  "version": "4.0.0",
+  "description": "Secure AI Proxy Backend for MAHAINDUSTRIES MOVIE STUDIO V4",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}
